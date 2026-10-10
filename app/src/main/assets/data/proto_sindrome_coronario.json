@@ -1,0 +1,397 @@
+{
+  "id": "protocolo_sindrome_coronario_001",
+  "nombre": "Síndrome Coronario (SCA / IAM)",
+  "tags_busqueda": [
+    "sindrome coronario",
+    "sindrome coronario agudo",
+    "sca",
+    "iam",
+    "infarto",
+    "dolor toracico",
+    "dolor de pecho",
+    "sdst",
+    "sin sdst",
+    "con sdst",
+    "aspirina",
+    "clopidogrel",
+    "atorvastatina",
+    "morfina",
+    "tenecteplase",
+    "furosemida",
+    "fentanilo",
+    "noradrenalina",
+    "trombolisis"
+  ],
+  "nodo_inicial": "nodo_criterios_sospecha",
+  "diagrama": {
+    "width": 1400,
+    "height": 1850,
+    "elementos": [
+      {
+        "id": "titulo",
+        "tipo": "titulo",
+        "x": 350,
+        "y": 20,
+        "width": 700,
+        "height": 55,
+        "texto": "SINDROME CORONARIO",
+        "font_size": 20
+      },
+      {
+        "id": "criterios_sospecha",
+        "tipo": "azul",
+        "x": 200,
+        "y": 95,
+        "width": 1000,
+        "height": 95,
+        "nodo_id": "nodo_criterios_sospecha",
+        "texto": "CONTROLAR ELECTROCARDIOGRAMA DE 12 DERIVACIONES A TODO PACIENTE QUE REFIERA DOLOR TORÁCICO DE TIPO OPRESIVO, CON O SIN IRRADIACIÓN, QUE NO CEDE CON EL REPOSO Y DE MAS DE 20 MINUTOS DE DURACIÓN.",
+        "font_size": 13
+      },
+      {
+        "id": "medidas_generales",
+        "tipo": "azul",
+        "x": 150,
+        "y": 230,
+        "width": 1100,
+        "height": 220,
+        "nodo_id": "nodo_medidas_generales",
+        "texto": "• CONTROLAR Y TRANSMITIR ELECTROCARDIOGRAMA DE 12 DERIVACIONES A C.R.\n• ADMINISTRAR OXIGENO SUPLEMENTARIO PARA MANTENER OXIMETRÍA DE PULSO > O IGUAL A 95%\n• MONITORIZAR ELECTROCARDIOGRÁFICAMENTE, CONTROL DE SIGNOS VITALES E INSTALAR ACCESO INTRAVENOSO\n• IAM C/SDST ADMINISTRAR SI NO EXISTE CONTRAINDICACIÓN:\n  ✓ ASPIRINA 500 MG A MASTICAR\n  ✓ CLOPIDOGREL 300 MG V.O (Mayores de 75 años 75 mg VO – 600 mg si APP o Trombolisis PH)\n  ✓ ATORVASTATINA 80 MG V.O\n  ✓ MANEJO DEL DOLOR MORFINA 2 a 4 Mg EV (1° DESCARTAR COMPROMISO VD)",
+        "font_size": 12.5
+      },
+      {
+        "id": "iam_sin_sdst",
+        "tipo": "azul",
+        "x": 230,
+        "y": 490,
+        "width": 320,
+        "height": 55,
+        "texto": "IAM SIN SDST",
+        "font_size": 15
+      },
+      {
+        "id": "iam_sin_sdst_manejo",
+        "tipo": "azul",
+        "x": 200,
+        "y": 580,
+        "width": 380,
+        "height": 80,
+        "nodo_id": "nodo_iam_sin_sdst",
+        "texto": "▪ Antecedentes cardiovasculares\n▪ Trasladar monitorizado",
+        "font_size": 13
+      },
+      {
+        "id": "iam_con_sdst",
+        "tipo": "azul",
+        "x": 740,
+        "y": 490,
+        "width": 300,
+        "height": 55,
+        "texto": "IAM CON SDST",
+        "font_size": 15
+      },
+      {
+        "id": "alerta_vd",
+        "tipo": "alerta",
+        "x": 1080,
+        "y": 465,
+        "width": 280,
+        "height": 100,
+        "texto": "En caso de SDST en AVF, DII y /o DIII controlar precordiales derechas\n(V3r y V4r)",
+        "font_size": 12.5
+      },
+      {
+        "id": "activar_codigo_iam",
+        "tipo": "azul",
+        "x": 740,
+        "y": 580,
+        "width": 300,
+        "height": 55,
+        "nodo_id": "nodo_iam_con_sdst",
+        "texto": "Activar código IAM*",
+        "font_size": 15
+      },
+      {
+        "id": "signos_congestion_lista",
+        "tipo": "alerta",
+        "x": 40,
+        "y": 665,
+        "width": 260,
+        "height": 220,
+        "nodo_id": "nodo_congestion_estable",
+        "texto": "Signos congestión\n▪ Ingurgitación yugular\n▪ Ortopnea\n▪ Ruidos húmedos en bases pulmonares\n▪ Edema de extremidades inferiores y /o superiores\n▪ Anasarca",
+        "font_size": 12.5
+      },
+      {
+        "id": "signos_congestion_estable",
+        "tipo": "amarillo",
+        "x": 40,
+        "y": 925,
+        "width": 260,
+        "height": 85,
+        "nodo_id": "nodo_congestion_estable",
+        "texto": "Signos de congestión con estabilidad hemodinámica",
+        "font_size": 13
+      },
+      {
+        "id": "consultar_epa",
+        "tipo": "azul",
+        "x": 60,
+        "y": 1050,
+        "width": 220,
+        "height": 65,
+        "nodo_id": "nodo_congestion_estable",
+        "texto": "Consultar protocolo EPA",
+        "font_size": 13
+      },
+      {
+        "id": "pregunta_inestabilidad",
+        "tipo": "azul",
+        "x": 520,
+        "y": 665,
+        "width": 560,
+        "height": 135,
+        "nodo_id": "pregunta_inestabilidad",
+        "texto": "¿SIGNOS DE INESTABILIDAD HEMODINAMICA?\n▪ Agitado\n▪ Uso De Musculatura Accesoria, Fatiga Muscular\n▪ Frecuencia Respiratoria > 30 Por Minuto\n▪ Frecuencia Cardiaca >120 Por Minuto",
+        "font_size": 13
+      },
+      {
+        "id": "inestable_con_congestion",
+        "tipo": "azul",
+        "x": 330,
+        "y": 845,
+        "width": 460,
+        "height": 375,
+        "nodo_id": "nodo_inestable_con_congestion",
+        "texto": "Inestabilidad hemodinámica con signos de congestión (PAM < 65 mmHg):\n▪ Valorar estado conciencia y manejo vía aérea\n▪ Reposo en posición fowler.\n▪ Administrar oxigeno suplementario\n▪ Furosemida 40 a 80 mg IV\n▪ Instalar segundo acceso IV\n\nSi persiste PAM< 65 mmHg:\n▪ Considerar Noradrenalina 8 mg/250 ml, iniciar a 0,05 ug/kilo/min titular según PANI",
+        "font_size": 12
+      },
+      {
+        "id": "inestable_sin_congestion",
+        "tipo": "azul",
+        "x": 830,
+        "y": 845,
+        "width": 480,
+        "height": 375,
+        "nodo_id": "nodo_inestable_sin_congestion",
+        "texto": "En caso de inestabilidad hemodinámica (PAM<65 mmHg) sin signos de congestión o Compromiso de VD:\n▪ Valorar estado conciencia y manejo vía aérea\n▪ Administrar oxigeno suplementario a máxima concentración.\n▪ Administrar solución salina tibia 250/500 ml IV. Considerar un segundo bolus.\n▪ Considerar Fentanilo en caso de dolor severo\n▪ Instalar segundo acceso IV\n\nSi persiste PAM< 65 mmHg:\n▪ Considerar Noradrenalina 8 mg/250 ml, iniciar a 0,05 ug/kilo/min titular según PANI",
+        "font_size": 12
+      },
+      {
+        "id": "trombolisis_info",
+        "tipo": "azul",
+        "x": 320,
+        "y": 1265,
+        "width": 780,
+        "height": 200,
+        "nodo_id": "nodo_dosis_tenecteplase",
+        "texto": "*Indicación de Trombolisis Prehospitalaria:\n✓ Duración del dolor > 30 min y < 12 horas\n✓ IAM C/SDST (*) o presunto nuevo Bloqueo de RI\n✓ Imposibilidad de acceder a APP\n✓ Inexistencia de contraindicaciones absolutas\n\nIndicación: TENECTEPLASE EV Según indicación MR",
+        "font_size": 13
+      }
+    ],
+    "conexiones": [
+      {"desde": "criterios_sospecha", "hasta": "medidas_generales"},
+      {"desde": "medidas_generales", "hasta": "iam_sin_sdst", "salida": "abajo", "entrada": "arriba"},
+      {"desde": "medidas_generales", "hasta": "iam_con_sdst", "salida": "abajo", "entrada": "arriba"},
+      {"desde": "iam_sin_sdst", "hasta": "iam_sin_sdst_manejo"},
+      {"desde": "iam_con_sdst", "hasta": "alerta_vd", "salida": "derecha", "entrada": "izquierda"},
+      {"desde": "iam_con_sdst", "hasta": "activar_codigo_iam"},
+      {"desde": "activar_codigo_iam", "hasta": "pregunta_inestabilidad"},
+      {"desde": "pregunta_inestabilidad", "hasta": "inestable_con_congestion", "salida": "abajo", "entrada": "arriba"},
+      {"desde": "pregunta_inestabilidad", "hasta": "inestable_sin_congestion", "salida": "abajo", "entrada": "arriba"},
+      {"desde": "signos_congestion_lista", "hasta": "signos_congestion_estable"},
+      {"desde": "signos_congestion_estable", "hasta": "consultar_epa"}
+    ]
+  },
+  "preparacion_salida": {
+    "insumos_generales": [
+      {
+        "id": "electrocardiografo",
+        "nombre": "Electrocardiógrafo de 12 derivaciones (con cables para V3r y V4r) y transmisión a C.R."
+      },
+      {
+        "id": "oxigenoterapia",
+        "nombre": "Oxigenoterapia para mantener Sat >= 95% o máxima concentración"
+      },
+      {
+        "id": "monitor_desfibrilador",
+        "nombre": "Monitor multiparámetro continuo (ECG, Signos Vitales y PANI para PAM)"
+      },
+      {
+        "id": "accesos_venosos",
+        "nombre": "Bránulas 18G/20G para 1° y 2° acceso intravenoso"
+      },
+      {
+        "id": "suero_fisiologico_tibio",
+        "nombre": "Solución salina tibia 250 a 500 mL IV (para bolus)"
+      },
+      {
+        "id": "bomba_infusion_bic",
+        "nombre": "Bomba de infusión continua (BIC) y matraz SG 5% 250 mL (para Noradrenalina)"
+      }
+    ],
+    "medicamentos": [
+      {
+        "nodo_id": "nodo_farmacos_antiisquemicos",
+        "condicion": "IAM C/SDST si no existe contraindicación"
+      },
+      {
+        "nodo_id": "nodo_dosis_tenecteplase",
+        "condicion": "*Indicación de Trombolisis Prehospitalaria según indicación MR"
+      },
+      {
+        "nodo_id": "nodo_dosis_furosemida",
+        "condicion": "Inestabilidad hemodinámica con signos de congestión (PAM < 65 mmHg)"
+      },
+      {
+        "nodo_id": "nodo_dosis_fentanilo",
+        "condicion": "Inestabilidad hemodinámica sin signos de congestión / compromiso VD (dolor severo)"
+      },
+      {
+        "nodo_id": "nodo_dosis_noradrenalina",
+        "condicion": "Inestabilidad hemodinámica si persiste PAM < 65 mmHg tras manejo inicial"
+      }
+    ]
+  },
+  "nodos": {
+    "nodo_criterios_sospecha": {
+      "id": "nodo_criterios_sospecha",
+      "tipo": "checklist",
+      "texto": "CONTROLAR ELECTROCARDIOGRAMA DE 12 DERIVACIONES A TODO PACIENTE QUE REFIERA DOLOR TORÁCICO DE TIPO OPRESIVO, CON O SIN IRRADIACIÓN, QUE NO CEDE CON EL REPOSO Y DE MAS DE 20 MINUTOS DE DURACIÓN.",
+      "siguiente_nodo": "nodo_medidas_generales"
+    },
+    "nodo_medidas_generales": {
+      "id": "nodo_medidas_generales",
+      "tipo": "procedimiento",
+      "texto": "Medidas Generales y Fármacos Iniciales:\n• CONTROLAR Y TRANSMITIR ELECTROCARDIOGRAMA DE 12 DERIVACIONES A C.R.\n• ADMINISTRAR OXIGENO SUPLEMENTARIO PARA MANTENER OXIMETRÍA DE PULSO > O IGUAL A 95%\n• MONITORIZAR ELECTROCARDIOGRÁFICAMENTE, CONTROL DE SIGNOS VITALES E INSTALAR ACCESO INTRAVENOSO\n• IAM C/SDST ADMINISTRAR SI NO EXISTE CONTRAINDICACIÓN:\n  ✓ ASPIRINA 500 MG A MASTICAR\n  ✓ CLOPIDOGREL 300 MG V.O (Mayores de 75 años 75 mg VO – 600 mg si APP o Trombolisis PH)\n  ✓ ATORVASTATINA 80 MG V.O\n  ✓ MANEJO DEL DOLOR MORFINA 2 a 4 Mg EV (1° DESCARTAR COMPROMISO VD)",
+      "siguiente_nodo": "pregunta_tipo_iam"
+    },
+    "pregunta_tipo_iam": {
+      "id": "pregunta_tipo_iam",
+      "tipo": "pregunta",
+      "texto": "¿Cuál es el resultado del Electrocardiograma de 12 derivaciones?",
+      "opciones": [
+        {
+          "texto": "IAM SIN SDST",
+          "siguiente_nodo": "nodo_iam_sin_sdst"
+        },
+        {
+          "texto": "IAM CON SDST",
+          "siguiente_nodo": "nodo_iam_con_sdst"
+        }
+      ]
+    },
+    "nodo_iam_sin_sdst": {
+      "id": "nodo_iam_sin_sdst",
+      "tipo": "procedimiento",
+      "texto": "Manejo IAM SIN SDST:\n▪ Antecedentes cardiovasculares\n▪ Trasladar monitorizado",
+      "siguiente_nodo": null
+    },
+    "nodo_iam_con_sdst": {
+      "id": "nodo_iam_con_sdst",
+      "tipo": "procedimiento",
+      "texto": "Manejo IAM CON SDST:\n• En caso de SDST en AVF, DII y /o DIII controlar precordiales derechas (V3r y V4r)\n• Activar código IAM*\n\n*Indicación de Trombolisis Prehospitalaria:\n✓ Duración del dolor > 30 min y < 12 horas\n✓ IAM C/SDST (*) o presunto nuevo Bloqueo de RI\n✓ Imposibilidad de acceder a APP\n✓ Inexistencia de contraindicaciones absolutas\nIndicación: TENECTEPLASE EV Según indicación MR",
+      "siguiente_nodo": "pregunta_inestabilidad"
+    },
+    "pregunta_inestabilidad": {
+      "id": "pregunta_inestabilidad",
+      "tipo": "pregunta",
+      "texto": "¿SIGNOS DE INESTABILIDAD HEMODINAMICA?\n▪ Agitado\n▪ Uso De Musculatura Accesoria, Fatiga Muscular\n▪ Frecuencia Respiratoria > 30 Por Minuto\n▪ Frecuencia Cardiaca >120 Por Minuto",
+      "opciones": [
+        {
+          "texto": "Inestabilidad hemodinámica CON signos de congestión (PAM < 65 mmHg)",
+          "siguiente_nodo": "nodo_inestable_con_congestion"
+        },
+        {
+          "texto": "Inestabilidad hemodinámica SIN signos de congestión o Compromiso VD (PAM < 65 mmHg)",
+          "siguiente_nodo": "nodo_inestable_sin_congestion"
+        },
+        {
+          "texto": "Signos de congestión con estabilidad hemodinámica",
+          "siguiente_nodo": "nodo_congestion_estable"
+        },
+        {
+          "texto": "Estable Hemodinámicamente (Avanzar a Trombolisis / Traslado)",
+          "siguiente_nodo": "nodo_dosis_tenecteplase"
+        }
+      ]
+    },
+    "nodo_inestable_con_congestion": {
+      "id": "nodo_inestable_con_congestion",
+      "tipo": "procedimiento",
+      "texto": "Inestabilidad hemodinámica con signos de congestión (PAM < 65 mmHg):\n▪ Valorar estado conciencia y manejo vía aérea\n▪ Reposo en posición fowler.\n▪ Administrar oxigeno suplementario\n▪ Furosemida 40 a 80 mg IV\n▪ Instalar segundo acceso IV\n\nSi persiste PAM< 65 mmHg:\n▪ Considerar Noradrenalina 8 mg/250 ml, iniciar a 0,05 ug/kilo/min titular según PANI",
+      "siguiente_nodo": "nodo_dosis_furosemida"
+    },
+    "nodo_inestable_sin_congestion": {
+      "id": "nodo_inestable_sin_congestion",
+      "tipo": "procedimiento",
+      "texto": "En caso de inestabilidad hemodinámica (PAM<65 mmHg) sin signos de congestión o Compromiso de VD:\n▪ Valorar estado conciencia y manejo vía aérea\n▪ Administrar oxigeno suplementario a máxima concentración.\n▪ Administrar solución salina tibia 250/500 ml IV. Considerar un segundo bolus.\n▪ Considerar Fentanilo en caso de dolor severo\n▪ Instalar segundo acceso IV\n\nSi persiste PAM< 65 mmHg:\n▪ Considerar Noradrenalina 8 mg/250 ml, iniciar a 0,05 ug/kilo/min titular según PANI",
+      "siguiente_nodo": "nodo_dosis_fentanilo"
+    },
+    "nodo_congestion_estable": {
+      "id": "nodo_congestion_estable",
+      "tipo": "procedimiento",
+      "texto": "Signos congestión:\n▪ Ingurgitación yugular\n▪ Ortopnea\n▪ Ruidos húmedos en bases pulmonares\n▪ Edema de extremidades inferiores y /o superiores\n▪ Anasarca\n\nSignos de congestión con estabilidad hemodinámica:\n→ Consultar protocolo EPA",
+      "siguiente_nodo": null
+    },
+    "nodo_farmacos_antiisquemicos": {
+      "id": "nodo_farmacos_antiisquemicos",
+      "tipo": "procedimiento",
+      "texto": "IAM C/SDST Administrar si no existe contraindicación:\n• Aspirina 500 mg a masticar\n• Clopidogrel 300 mg V.O (Mayores de 75 años 75 mg VO – 600 mg si APP o Trombolisis PH)\n• Atorvastatina 80 mg V.O\n• Manejo del dolor Morfina 2 a 4 mg EV (1° descartar compromiso VD)",
+      "siguiente_nodo": null
+    },
+    "nodo_dosis_tenecteplase": {
+      "id": "nodo_dosis_tenecteplase",
+      "tipo": "droga",
+      "texto": "*Indicación de Trombolisis Prehospitalaria:\n✓ Duración del dolor > 30 min y < 12 horas\n✓ IAM C/SDST (*) o presunto nuevo Bloqueo de RI\n✓ Imposibilidad de acceder a APP\n✓ Inexistencia de contraindicaciones absolutas\nIndicación: TENECTEPLASE EV Según indicación MR",
+      "nombre_droga": "Tenecteplase (TNK)",
+      "dosis_formula": "Según indicación MR",
+      "unidad": "UI / mg",
+      "presentacion": "Frasco ampolla",
+      "via": "EV",
+      "instruccion_extra": "Activar Código IAM y administrar Tenecteplase según indicación del Médico Regulador.",
+      "siguiente_nodo": null
+    },
+    "nodo_dosis_furosemida": {
+      "id": "nodo_dosis_furosemida",
+      "tipo": "droga",
+      "texto": "Administrar Furosemida 40 a 80 mg IV en inestabilidad con congestión.",
+      "nombre_droga": "Furosemida",
+      "dosis_formula": "40 - 80",
+      "unidad": "mg",
+      "presentacion": "Ampolla 20 mg / 2 mL",
+      "via": "IV",
+      "instruccion_extra": "Si persiste PAM < 65 mmHg considerar Noradrenalina 8 mg/250 ml a 0,05 ug/kg/min.",
+      "siguiente_nodo": "nodo_dosis_noradrenalina"
+    },
+    "nodo_dosis_fentanilo": {
+      "id": "nodo_dosis_fentanilo",
+      "tipo": "droga",
+      "texto": "Considerar Fentanilo en caso de dolor severo en inestabilidad sin congestión o compromiso VD.",
+      "nombre_droga": "Fentanilo",
+      "dosis_formula": "1 - 2",
+      "unidad": "ug/kg",
+      "presentacion": "Ampolla 100 ug / 2 mL",
+      "via": "IV",
+      "instruccion_extra": "Administrar solución salina tibia 250/500 ml IV. Si persiste PAM < 65 mmHg considerar Noradrenalina.",
+      "siguiente_nodo": "nodo_dosis_noradrenalina"
+    },
+    "nodo_dosis_noradrenalina": {
+      "id": "nodo_dosis_noradrenalina",
+      "tipo": "droga",
+      "texto": "Si persiste PAM < 65 mmHg: Considerar Noradrenalina 8 mg/250 ml, iniciar a 0,05 ug/kilo/min titular según PANI.",
+      "nombre_droga": "Noradrenalina",
+      "dosis_formula": "0.05",
+      "unidad": "ug/kg/min",
+      "presentacion": "8 mg en 250 mL SG 5%",
+      "via": "BIC",
+      "instruccion_extra": "Titular según PANI hasta alcanzar PAM objetivo.",
+      "siguiente_nodo": null
+    }
+  },
+  "alertas_generales": [
+    "En caso de SDST en AVF, DII y /o DIII controlar precordiales derechas (V3r y V4r).",
+    "1° Descartar compromiso de Ventrículo Derecho (VD) antes de administrar Morfina.",
+    "Signos de congestión con estabilidad hemodinámica: Consultar protocolo EPA."
+  ]
+}

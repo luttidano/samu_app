@@ -1,0 +1,58 @@
+[
+    {
+        "id": "hipoglicemia",
+        "nombre": "Hipoglicemia",
+        "categoria": "Metabólico",
+        "archivo": "assets/data/proto_hipglicemia.json",
+        "tags_busqueda": [
+            "hipoglicemia",
+            "hgt",
+            "glicemia baja",
+            "azucar baja",
+            "diabetes"
+        ]
+    },
+    {
+        "id": "hiperglicemia",
+        "nombre": "Hiperglicemia",
+        "categoria": "Metabólico",
+        "archivo": "assets/data/proto_hipglicemia.json",
+        "tags_busqueda": [
+            "hiperglicemia",
+            "hgt",
+            "glicemia alta",
+            "azucar alta",
+            "diabetes",
+            "insulina",
+            "cetoacidosis"
+        ]
+    },
+    {
+        "id": "protocolo_edema_pulmon_agudo_001",
+        "nombre": "Edema Agudo de Pulmón (EPA)",
+        "categoria": "Cardiovascular",
+        "archivo": "assets/data/proto_EPA.json",
+        "tags_busqueda": [
+            "edema agudo de pulmon",
+            "edema_agudo_pulmon",
+            "epa",
+            "insuficiencia cardiaca",
+            "disnea" 
+        ]
+    },
+    {
+        "id":"protocolo_sindrome_coronario_001",
+        "nombre": "Sindrome Coronario (SCA/IAM)",
+        "categoria":"Cardiovascular",
+        "archivo": "assets/data/proto_sindrome_coronario.json",
+        "tags_busqueda": [
+            "sindrome coronario",
+            "sindrome_coronario",
+            "sindrome coronario agudo",
+            "sca",
+            "iam",
+            "sdst"
+        ]
+    }
+        
+]
