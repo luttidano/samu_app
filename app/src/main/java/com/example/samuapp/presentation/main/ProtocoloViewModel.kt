@@ -2,29 +2,29 @@ package com.example.samuapp.presentation.main
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.samuapp.domain.model.CalculoDosis
-import com.example.samuapp.domain.model.DatosPaciente
-import com.example.samuapp.domain.model.Protocolo
+import com.example.samuapp.domain.model.*
 import com.example.samuapp.domain.repository.ProtocoloRepository
 import com.example.samuapp.domain.service.CalculoDosisService
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
 data class ProtocoloUiState(
     val protocoloActivo: Protocolo? = null,
     val calculoDosis: CalculoDosis? = null,
     val dosisPorNodo: Map<String, CalculoDosis> = emptyMap(),
     val datosConfirmados: DatosPaciente? = null,
+    val protocoloFlujo: Protocolo? = null,
+    val nodoInicialFlujo: String? = null,
     val isLoading: Boolean = false,
     val error: String? = null
 )
 
-class ProtocoloViewModel(
+@HiltViewModel
+class ProtocoloViewModel @Inject constructor(
     private val protocoloRepository: ProtocoloRepository,
-    private val calculoDosisService: CalculoDosisService = CalculoDosisService()
+    private val calculoDosisService: CalculoDosisService
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ProtocoloUiState())
@@ -97,6 +97,15 @@ class ProtocoloViewModel(
                     )
                 }
             }
+        }
+    }
+
+    fun seleccionarParaFlujo(protocolo: Protocolo, nodoInicial: String? = null) {
+        _uiState.update {
+            it.copy(
+                protocoloFlujo = protocolo,
+                nodoInicialFlujo = nodoInicial
+            )
         }
     }
 

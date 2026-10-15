@@ -16,6 +16,9 @@
 # debugging stack traces.
 #-keepattributes SourceFile,LineNumberTable
 
-# If you keep the line number information, uncomment this to
-# hide the original source file name.
-#-renamesourcefileattribute SourceFile
+# ProGuard rules for JNA (Java Native Access)
+-dontwarn java.awt.*
+-dontwarn sun.misc.*
+-dontwarn com.sun.jna.*
+-keep class com.sun.jna.** { *; }
+-keepclassmembers class com.sun.jna.** { *; }

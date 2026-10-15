@@ -1,5 +1,8 @@
 package com.example.samuapp.presentation.main
 
+import android.Manifest
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -8,12 +11,15 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.AltRoute
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.MenuBook
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Keyboard
+import androidx.compose.material.icons.outlined.Cancel
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -24,11 +30,13 @@ import com.example.samuapp.presentation.components.ConfirmacionDatosDialog
 import com.example.samuapp.presentation.components.ListaProtocolosDialog
 import com.example.samuapp.presentation.components.TarjetaAlertasProtocolo
 import com.example.samuapp.presentation.components.TarjetaPreparacionProtocolo
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(
     viewModel: ProtocoloViewModel,
+    vozViewModel: VozViewModel,
     indices: List<ProtocoloIndice>,
     onVerProtocoloFlujo: () -> Unit,
     onAbrirConfiguracion: () -> Unit,
@@ -36,12 +44,49 @@ fun MainScreen(
     modifier: Modifier = Modifier
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val vozUiState by vozViewModel.uiState.collectAsState()
     val hayResultado = !uiState.isLoading && uiState.protocoloActivo != null
 
+    val snackbarHostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
+
     var mostrarDialogoValidacion by remember { mutableStateOf(false) }
+    var datosParaValidar by remember { mutableStateOf<DatosPaciente?>(null) }
     var mostrarCatalogo by remember { mutableStateOf(false) }
 
+    val micPermissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        if (isGranted) {
+            vozViewModel.iniciarGrabacion()
+        } else {
+            scope.launch {
+                snackbarHostState.showSnackbar("Se necesita permiso para usar el micrófono")
+            }
+        }
+    }
+
+    // Al recibir datos parseados por voz, abrir automáticamente el diálogo de confirmación
+    LaunchedEffect(vozUiState.datosPaciente) {
+        val datos = vozUiState.datosPaciente
+        if (datos != null && !vozUiState.isProcessing) {
+            datosParaValidar = datos
+            mostrarDialogoValidacion = true
+            vozViewModel.consumirDatosPaciente()
+        }
+    }
+
+    // Mostrar errores de voz si ocurren
+    LaunchedEffect(vozUiState.errorMessage) {
+        val error = vozUiState.errorMessage
+        if (error != null) {
+            snackbarHostState.showSnackbar(error)
+            vozViewModel.limpiarError()
+        }
+    }
+
     Scaffold(
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         topBar = {
             TopAppBar(
                 title = {
@@ -79,7 +124,7 @@ fun MainScreen(
         },
         floatingActionButtonPosition = FabPosition.Start,
         floatingActionButton = {
-            if (!hayResultado && !uiState.isLoading) {
+            if (!hayResultado && !uiState.isLoading && !vozUiState.isProcessing) {
                 ExtendedFloatingActionButton(
                     onClick = { mostrarCatalogo = true },
                     icon = { Icon(Icons.AutoMirrored.Filled.MenuBook, contentDescription = null) },
@@ -104,6 +149,50 @@ fun MainScreen(
                 CircularProgressIndicator(
                     modifier = Modifier.align(Alignment.Center)
                 )
+            } else if (vozUiState.isProcessing) {
+                // Vista idéntica a Flutter durante la transcripción y análisis de voz
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(48.dp),
+                        strokeWidth = 4.dp
+                    )
+                    Spacer(modifier = Modifier.height(20.dp))
+                    Text(
+                        text = "Transcribiendo y analizando voz...",
+                        style = MaterialTheme.typography.bodyLarge,
+                        fontWeight = FontWeight.W500,
+                        fontSize = 16.sp
+                    )
+                    Spacer(modifier = Modifier.height(24.dp))
+                    OutlinedButton(
+                        onClick = { vozViewModel.cancelarEntradaVoz() },
+                        colors = ButtonDefaults.outlinedButtonColors(
+                            contentColor = Color.Red
+                        ),
+                        border = androidx.compose.foundation.BorderStroke(1.dp, Color.Red),
+                        shape = RoundedCornerShape(10.dp),
+                        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 10.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Outlined.Cancel,
+                            contentDescription = null,
+                            modifier = Modifier.size(18.dp),
+                            tint = Color.Red
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(
+                            text = "Cancelar entrada de voz",
+                            fontWeight = FontWeight.Bold,
+                            color = Color.Red
+                        )
+                    }
+                }
             } else if (hayResultado) {
                 // Vista con resultado activo (Preparación, Alertas y Botón de Flujo)
                 val protocolo = uiState.protocoloActivo!!
@@ -157,16 +246,45 @@ fun MainScreen(
                     verticalArrangement = Arrangement.Center
                 ) {
                     BotonDictadoVoz(
-                        onClick = {
-                            // Al tocar el botón de dictado abre el diálogo para validar datos clínicos
-                            mostrarDialogoValidacion = true
+                        isRecording = vozUiState.isRecording,
+                        isProcessing = vozUiState.isProcessing,
+                        onIniciarGrabacion = {
+                            if (vozViewModel.tienePermisoMicrofono()) {
+                                vozViewModel.iniciarGrabacion()
+                            } else {
+                                micPermissionLauncher.launch(Manifest.permission.RECORD_AUDIO)
+                            }
+                        },
+                        onDetenerYTranscribir = {
+                            vozViewModel.detenerYTranscribir()
+                        },
+                        onCancelarGrabacion = {
+                            vozViewModel.cancelarEntradaVoz()
+                        },
+                        onTapCortoAviso = {
+                            scope.launch {
+                                snackbarHostState.showSnackbar(
+                                    message = "Mantén presionado para hablar o desliza ↑ para fijar.",
+                                    duration = SnackbarDuration.Short
+                                )
+                            }
                         }
                     )
 
                     Spacer(modifier = Modifier.height(24.dp))
 
                     OutlinedButton(
-                        onClick = { mostrarDialogoValidacion = true },
+                        onClick = {
+                            datosParaValidar = DatosPaciente(
+                                urgencia = null,
+                                sexo = "masculino",
+                                pesoKg = null,
+                                esValido = false,
+                                requiereConfirmacion = true
+                            )
+                            mostrarDialogoValidacion = true
+                        },
+                        enabled = !vozUiState.isProcessing,
                         shape = RoundedCornerShape(12.dp),
                         contentPadding = PaddingValues(horizontal = 20.dp, vertical = 12.dp)
                     ) {
@@ -187,7 +305,7 @@ fun MainScreen(
             // Diálogo de Validar Datos Clínicos
             if (mostrarDialogoValidacion) {
                 ConfirmacionDatosDialog(
-                    datosIniciales = uiState.datosConfirmados ?: DatosPaciente(
+                    datosIniciales = datosParaValidar ?: DatosPaciente(
                         urgencia = null,
                         sexo = "masculino",
                         pesoKg = null,
@@ -195,9 +313,13 @@ fun MainScreen(
                         requiereConfirmacion = true
                     ),
                     opcionesProtocolos = indices,
-                    onDismiss = { mostrarDialogoValidacion = false },
+                    onDismiss = {
+                        mostrarDialogoValidacion = false
+                        datosParaValidar = null
+                    },
                     onConfirmar = { datosConfirmados ->
                         mostrarDialogoValidacion = false
+                        datosParaValidar = null
                         viewModel.procesarPacienteConfirmado(datosConfirmados)
                     }
                 )

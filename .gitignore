@@ -13,3 +13,8 @@
 .externalNativeBuild
 .cxx
 local.properties
+
+
+*.bin
+*.pt
+app/src/main/assets/model/
