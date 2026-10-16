@@ -109,16 +109,21 @@ class MainActivity : ComponentActivity() {
                                     navController.navigate(Destinos.CONFIGURACION)
                                 },
                                 onSeleccionarProtocoloCatalogo = { item ->
+                                    viewModel.setCargando(true)
                                     coroutineScope.launch {
-                                        val proto = protocoloRepository.cargarProtocoloPorRuta(item.archivo)
-                                        val idLower = item.id.lowercase()
-                                        val nodoInicial = when {
-                                            idLower == "hiperglicemia" -> "pregunta_alt_consciencia_hiper"
-                                            idLower == "hipoglicemia" -> "nodo_abcde"
-                                            else -> null
+                                        try {
+                                            val proto = protocoloRepository.cargarProtocoloPorRuta(item.archivo)
+                                            val idLower = item.id.lowercase()
+                                            val nodoInicial = when {
+                                                idLower == "hiperglicemia" -> "pregunta_alt_consciencia_hiper"
+                                                idLower == "hipoglicemia" -> "nodo_abcde"
+                                                else -> null
+                                            }
+                                            viewModel.seleccionarParaFlujo(proto, nodoInicial)
+                                            navController.navigate(Destinos.FLUJO_PROTOCOLO)
+                                        } finally {
+                                            viewModel.setCargando(false)
                                         }
-                                        viewModel.seleccionarParaFlujo(proto, nodoInicial)
-                                        navController.navigate(Destinos.FLUJO_PROTOCOLO)
                                     }
                                 }
                             )

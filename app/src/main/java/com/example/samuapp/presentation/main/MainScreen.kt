@@ -25,8 +25,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.samuapp.domain.model.DatosPaciente
 import com.example.samuapp.domain.model.ProtocoloIndice
+import com.example.samuapp.presentation.components.BarraNavegacionInferior
 import com.example.samuapp.presentation.components.BotonDictadoVoz
+import com.example.samuapp.presentation.components.BuscarPacienteRunDialog
 import com.example.samuapp.presentation.components.ConfirmacionDatosDialog
+import com.example.samuapp.presentation.components.IndicadorCargaCircular
 import com.example.samuapp.presentation.components.ListaProtocolosDialog
 import com.example.samuapp.presentation.components.TarjetaAlertasProtocolo
 import com.example.samuapp.presentation.components.TarjetaPreparacionProtocolo
@@ -53,6 +56,7 @@ fun MainScreen(
     var mostrarDialogoValidacion by remember { mutableStateOf(false) }
     var datosParaValidar by remember { mutableStateOf<DatosPaciente?>(null) }
     var mostrarCatalogo by remember { mutableStateOf(false) }
+    var mostrarDialogoBuscarRun by remember { mutableStateOf(false) }
 
     val micPermissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission()
@@ -91,7 +95,7 @@ fun MainScreen(
             TopAppBar(
                 title = {
                     Text(
-                        text = "Protocolos SAMU - Asistente",
+                        text = "VITA - asistente SAMU",
                         fontWeight = FontWeight.Bold,
                         fontSize = 19.sp
                     )
@@ -122,20 +126,11 @@ fun MainScreen(
                 )
             )
         },
-        floatingActionButtonPosition = FabPosition.Start,
-        floatingActionButton = {
-            if (!hayResultado && !uiState.isLoading && !vozUiState.isProcessing) {
-                ExtendedFloatingActionButton(
-                    onClick = { mostrarCatalogo = true },
-                    icon = { Icon(Icons.AutoMirrored.Filled.MenuBook, contentDescription = null) },
-                    text = {
-                        Text(
-                            text = "Protocolos",
-                            fontWeight = FontWeight.Bold
-                        )
-                    },
-                    elevation = FloatingActionButtonDefaults.elevation(defaultElevation = 3.dp),
-                    shape = RoundedCornerShape(16.dp)
+        bottomBar = {
+            if (!hayResultado && !vozUiState.isProcessing && !uiState.isLoading) {
+                BarraNavegacionInferior(
+                    onAbrirProtocolos = { mostrarCatalogo = true },
+                    onBuscarPacienteRun = { mostrarDialogoBuscarRun = true }
                 )
             }
         }
@@ -146,7 +141,8 @@ fun MainScreen(
                 .padding(innerPadding)
         ) {
             if (uiState.isLoading) {
-                CircularProgressIndicator(
+                IndicadorCargaCircular(
+                    mensaje = "Cargando protocolo...",
                     modifier = Modifier.align(Alignment.Center)
                 )
             } else if (vozUiState.isProcessing) {
@@ -333,6 +329,21 @@ fun MainScreen(
                     onSeleccionarProtocolo = { seleccionado ->
                         mostrarCatalogo = false
                         onSeleccionarProtocoloCatalogo(seleccionado)
+                    }
+                )
+            }
+
+            // Diálogo de Búsqueda de Paciente por RUN chileno
+            if (mostrarDialogoBuscarRun) {
+                BuscarPacienteRunDialog(
+                    onDismiss = { mostrarDialogoBuscarRun = false },
+                    onBuscar = { runBuscado ->
+                        scope.launch {
+                            snackbarHostState.showSnackbar(
+                                message = "Búsqueda de antecedentes para RUN: $runBuscado",
+                                duration = SnackbarDuration.Short
+                            )
+                        }
                     }
                 )
             }

@@ -109,6 +109,10 @@ class ProtocoloViewModel @Inject constructor(
         }
     }
 
+    fun setCargando(cargando: Boolean) {
+        _uiState.update { it.copy(isLoading = cargando) }
+    }
+
     fun reiniciar() {
         _uiState.value = ProtocoloUiState()
     }
