@@ -17,101 +17,91 @@
   "nodo_inicial": "nodo_criterios_evaluacion_inicial",
   "diagrama": {
     "width": 920,
-    "height": 1200,
+    "height": 1150,
     "elementos": [
-      {
-        "id": "titulo",
-        "tipo": "titulo",
-        "x": 130,
-        "y": 20,
-        "width": 660,
-        "height": 52,
-        "texto": "EDEMA AGUDO DE PULMON (EPA)",
-        "font_size": 20
-      },
       {
         "id": "criterios",
         "tipo": "azul",
-        "x": 150,
-        "y": 80,
-        "width": 620,
-        "height": 120,
+        "x": 110,
+        "y": 20,
+        "width": 700,
+        "height": 125,
         "nodo_id": "nodo_criterios_evaluacion_inicial",
-        "texto": "Secundario a Insuficiencia cardiaca aguda.\nSignos y síntomas: Disnea, esputo espumoso de color rosado, distensión venosa yugular, estertores a la auscultación, taquicardia e Hipertensión.",
+        "texto": "▪ Secundario a Insuficiencia cardiaca aguda\n▪ Signos y síntomas: Disnea, esputo espumoso de color rosado, distensión venosa yugular, estertores a la auscultación, taquicardia e Hipertensión.",
         "font_size": 14
       },
       {
         "id": "abcde",
         "tipo": "amarillo",
-        "x": 300,
-        "y": 230,
-        "width": 320,
-        "height": 55,
+        "x": 290,
+        "y": 175,
+        "width": 340,
+        "height": 60,
         "texto": "A B C D E",
-        "font_size": 25
+        "font_size": 24
       },
       {
         "id": "medidas",
         "tipo": "azul",
-        "x": 140,
-        "y": 320,
-        "width": 640,
-        "height": 170,
+        "x": 100,
+        "y": 265,
+        "width": 720,
+        "height": 280,
         "nodo_id": "nodo_medidas_generales",
-        "texto": "Oxígeno para Sat >= 92%\nPosición semisentado o sentado\nVentilación no invasiva CPAP o BIPAP\nVía venosa\nControl de signos vitales\nMonitorización + ECG 12 derivaciones",
-        "font_size": 14
+        "texto": "▪ Oxígeno para Sat ≥ 92%\n▪ Posición semisentado o sentado\n▪ Considere la posibilidad de ventilación no invasiva con presión positiva continua en vías respiratorias o dos niveles de presión positiva (BIPAP) en pcte. consciente y cooperador.\n▪ Vía Venosa\n▪ Control Signos Vitales\n▪ Monitorización + ECG 12 Derivaciones (IAM Pared, descartar compromiso VD)",
+        "font_size": 13.5
       },
       {
         "id": "pregunta_hemodinamica",
         "tipo": "azul",
-        "x": 280,
-        "y": 535,
-        "width": 360,
-        "height": 55,
+        "x": 250,
+        "y": 575,
+        "width": 420,
+        "height": 60,
         "nodo_id": "pregunta_condicion_hemodinamica",
-        "texto": "¿Condición hemodinámica del paciente?",
-        "font_size": 14
+        "texto": "¿Condición Hemodinámica del Pcte?",
+        "font_size": 15
       },
       {
         "id": "hipotenso",
         "tipo": "azul",
-        "x": 20,
-        "y": 650,
-        "width": 390,
-        "height": 145,
+        "x": 15,
+        "y": 665,
+        "width": 440,
+        "height": 235,
         "nodo_id": "nodo_manejo_hipotenso",
-        "texto": "Paciente hipotenso (PAS < 90 o PAM < 65)\n\n✓ Noradrenalina 0,05 ug/Kg/min por BIC y titular según PAM\n✓ Dobutamina 2 a 10 ug/kg/min\n\nOBJETIVO: PAM > 65 mmHg",
-        "font_size": 13
+        "texto": "Paciente Hipotenso (PAS < 90 o PAM < 65):\n\n✓ Iniciar Noradrenalina 0,05 µg/Kg/min por BIC y titular según PAM\n✓ Dobutamina 2 a 10 µg/kg/min\n\nOBJETIVO TERAPÉUTICO = PAM > 65 mm Hg",
+        "font_size": 13.5
       },
       {
         "id": "normotenso",
         "tipo": "azul",
-        "x": 510,
-        "y": 650,
-        "width": 390,
-        "height": 145,
+        "x": 465,
+        "y": 665,
+        "width": 440,
+        "height": 235,
         "nodo_id": "nodo_manejo_normo_hipertenso",
-        "texto": "Paciente normotenso / hipertenso\nMantener PAM > 65 mmHg\n\nCaptopril 12,5 - 25 mg SL\nNitroglicerina 0,6 mg o infusión\nFurosemida 40 a 80 mg IV\nMorfina 2 a 5 mg IV",
-        "font_size": 13
+        "texto": "Paciente normotenso / Hipertenso:\n(Mantener PAM > 65 mm Hg)\n\n▪ Captopril 12,5 – 25 mg s/l\n▪ Nitroglicerina s/l 0,6 mg o Nitroglicerina en infusión 0,5 a 0,7 ug/kg/min, y titular\n▪ Furosemida 40 a 80 mg IV\n▪ Morfina 1% 2 a 5 mg IV",
+        "font_size": 13.5
       },
       {
         "id": "final",
         "tipo": "azul",
-        "x": 220,
-        "y": 900,
-        "width": 480,
-        "height": 100,
+        "x": 200,
+        "y": 930,
+        "width": 520,
+        "height": 130,
         "nodo_id": "nodo_final_evaluacion_traslado",
-        "texto": "Evaluar necesidad de IOT\nReporte de situación a CR\nTraslado rápido a UEH en posición semisentado",
+        "texto": "▪ Evaluar necesidad de IOT\n▪ Reporte Situación a CR\n▪ Traslado rápido a UEH en posición Semisentado",
         "font_size": 14
       },
       {
         "id": "alerta",
         "tipo": "alerta",
-        "x": 80,
-        "y": 1060,
-        "width": 760,
-        "height": 70,
+        "x": 60,
+        "y": 1090,
+        "width": 800,
+        "height": 80,
         "texto": "Precaución en el uso de Nitroglicerina y Morfina, en IAM con compromiso de VD",
         "font_size": 14
       }
@@ -124,15 +114,13 @@
         "desde": "pregunta_hemodinamica",
         "hasta": "hipotenso",
         "salida": "abajo",
-        "entrada": "arriba",
-        "etiqueta": "Paciente hipotenso"
+        "entrada": "arriba"
       },
       {
         "desde": "pregunta_hemodinamica",
         "hasta": "normotenso",
         "salida": "abajo",
-        "entrada": "arriba",
-        "etiqueta": "Paciente normotenso / hipertenso"
+        "entrada": "arriba"
       },
       {
         "desde": "hipotenso",

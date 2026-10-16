@@ -23,6 +23,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.TransformOrigin
@@ -32,18 +33,27 @@ import androidx.compose.ui.graphics.drawscope.withTransform
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.text.ParagraphStyle
+import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextMeasurer
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextIndent
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.unit.Constraints
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.samuapp.domain.model.DiagramaProtocolo
 import com.example.samuapp.domain.model.ElementoDiagrama
 import com.example.samuapp.domain.model.Protocolo
+import com.example.samuapp.ui.theme.LocalDarkTheme
 import kotlin.math.abs
 import kotlin.math.atan2
 
@@ -68,13 +78,16 @@ fun VistaDiagramaCompleto(
         return
     }
 
-    val isDark = isSystemInDarkTheme()
-    val canvasBgColor = if (isDark) MaterialTheme.colorScheme.background else Color(0xFFF5F5F5)
+    val isDark = LocalDarkTheme.current
+    val canvasBgColor = if (isDark) MaterialTheme.colorScheme.background else Color(0xFFF8FAFC)
     val textMeasurer = rememberTextMeasurer()
     val density = LocalDensity.current
 
+    val (layoutList, totalHeight) = rememberDiagramaLayout(diagrama, protocolo, density, textMeasurer)
+    val layoutMap = remember(layoutList) { layoutList.associateBy { it.elemento.id } }
+
     val diagWidthPx = with(density) { diagrama.width.dp.toPx() }
-    val diagHeightPx = with(density) { diagrama.height.dp.toPx() }
+    val diagHeightPx = with(density) { totalHeight.toPx() }
 
     var scale by remember { mutableFloatStateOf(0.85f) }
     var translation by remember { mutableStateOf(Offset.Zero) }
@@ -119,20 +132,20 @@ fun VistaDiagramaCompleto(
                     translationY = translation.y
                     transformOrigin = TransformOrigin(0f, 0f)
                 }
-                .requiredSize(width = diagrama.width.dp, height = diagrama.height.dp)
+                .requiredSize(width = diagrama.width.dp, height = totalHeight)
         ) {
             // Capa 1: Dibujar conexiones, flechas y etiquetas
             Canvas(modifier = Modifier.fillMaxSize()) {
-                val lineColor = Color(0xFF416FC0)
+                val lineColor = Color(0xFF2B6CB0)
 
                 for (conexion in diagrama.conexiones) {
-                    val desde = diagrama.elementos.find { it.id == conexion.desde }
-                    val hasta = diagrama.elementos.find { it.id == conexion.hasta }
+                    val desdeLayout = layoutMap[conexion.desde]
+                    val hastaLayout = layoutMap[conexion.hasta]
 
-                    if (desde == null || hasta == null) continue
+                    if (desdeLayout == null || hastaLayout == null) continue
 
-                    val start = obtenerPuntoAncla(desde, conexion.salida)
-                    val end = obtenerPuntoAncla(hasta, conexion.entrada)
+                    val start = obtenerPuntoAncla(layoutMap, conexion.desde, conexion.salida)
+                    val end = obtenerPuntoAncla(layoutMap, conexion.hasta, conexion.entrada)
 
                     dibujarConexion(
                         start = start,
@@ -153,15 +166,15 @@ fun VistaDiagramaCompleto(
                 }
             }
 
-            // Capa 2: Elementos del diagrama posicionados por coordenadas absolutas
-            for (elemento in diagrama.elementos) {
+            // Capa 2: Elementos del diagrama adaptados dinámicamente al texto y sin solaparse
+            for (layout in layoutList) {
                 Box(
                     modifier = Modifier
-                        .offset(x = elemento.x.dp, y = elemento.y.dp)
-                        .size(width = elemento.width.dp, height = elemento.height.dp)
+                        .offset(x = layout.x, y = layout.y)
+                        .size(width = layout.width, height = layout.height)
                 ) {
                     ElementoDiagramaCard(
-                        elemento = elemento,
+                        elemento = layout.elemento,
                         protocolo = protocolo,
                         canvasBgColor = canvasBgColor,
                         isDark = isDark
@@ -226,6 +239,146 @@ fun VistaDiagramaCompleto(
     }
 }
 
+private fun esConceptoElemento(elemento: ElementoDiagrama, texto: String): Boolean {
+    if (elemento.tipo == "opcion") return true
+
+    val conceptosIds = setOf(
+        "criterios_sospecha", "abcde", "iam_sin_sdst", "iam_con_sdst",
+        "activar_codigo_iam", "hipo", "hiper", "glicemia", "glicemia_si", "glicemia_no",
+        "mantiene_opcion_si", "mantiene_opcion_no", "signos_congestion_estable",
+        "consultar_epa"
+    )
+    if (elemento.id in conceptosIds) return true
+
+    val trimmed = texto.trim()
+    if (trimmed.startsWith("¿") && trimmed.endsWith("?")) return true
+
+    val tieneListado = texto.contains("▪") || 
+        texto.contains("•") || 
+        texto.contains("✓") || 
+        texto.contains("\n-") || 
+        Regex("""(?m)^\s*\d+[\.\)]\s+""").containsMatchIn(texto)
+
+    return !tieneListado && texto.lines().size <= 3
+}
+
+private fun construirAnnotatedDiagramaString(
+    text: String,
+    fontSizeSp: androidx.compose.ui.unit.TextUnit,
+    color: Color,
+    defaultFontWeight: FontWeight,
+    textAlign: TextAlign
+): androidx.compose.ui.text.AnnotatedString {
+    return buildAnnotatedString {
+        val lines = text.split("\n")
+        lines.forEachIndexed { index, rawLine ->
+            val trimmed = rawLine.trim()
+            if (trimmed.isEmpty()) {
+                withStyle(ParagraphStyle(textAlign = textAlign)) {
+                    append("")
+                }
+            } else {
+                val numMatch = Regex("""^(\d+[\.\)])\s*(.*)$""").find(trimmed)
+                val bulletMatch = Regex("""^([▪•✓\-\*✔☑])\s*(.*)$""").find(trimmed)
+
+                val isSubItem = rawLine.startsWith("  ") || rawLine.startsWith("\t")
+                val baseIndent = if (isSubItem) (fontSizeSp.value * 1.5f).sp else 0.sp
+                val restIndent = if (isSubItem) (fontSizeSp.value * 2.8f).sp else (fontSizeSp.value * 1.35f).sp
+
+                if (numMatch != null) {
+                    val prefix = numMatch.groupValues[1]
+                    val content = numMatch.groupValues[2]
+                    withStyle(
+                        ParagraphStyle(
+                            textAlign = TextAlign.Start,
+                            textIndent = TextIndent(firstLine = baseIndent, restLine = restIndent)
+                        )
+                    ) {
+                        withStyle(SpanStyle(fontWeight = FontWeight.Bold, color = color)) {
+                            append("$prefix ")
+                        }
+                        withStyle(SpanStyle(fontWeight = defaultFontWeight, color = color)) {
+                            append(content)
+                        }
+                    }
+                } else if (bulletMatch != null) {
+                    val prefix = bulletMatch.groupValues[1]
+                    val content = bulletMatch.groupValues[2]
+                    withStyle(
+                        ParagraphStyle(
+                            textAlign = TextAlign.Start,
+                            textIndent = TextIndent(firstLine = baseIndent, restLine = restIndent)
+                        )
+                    ) {
+                        withStyle(SpanStyle(fontWeight = FontWeight.Bold, color = color)) {
+                            append("$prefix ")
+                        }
+                        withStyle(SpanStyle(fontWeight = defaultFontWeight, color = color)) {
+                            append(content)
+                        }
+                    }
+                } else {
+                    val isQuestion = trimmed.startsWith("¿") && trimmed.endsWith("?")
+                    val isHeader = trimmed.endsWith(":") || trimmed.startsWith("OBJETIVO") || trimmed.startsWith("*Indicación")
+                    val isCenteredLine = textAlign == TextAlign.Center || isQuestion
+                    val lineAlign = if (isCenteredLine) TextAlign.Center else textAlign
+                    val isLineBold = isHeader || isQuestion || defaultFontWeight == FontWeight.Bold
+
+                    withStyle(
+                        ParagraphStyle(
+                            textAlign = lineAlign,
+                            textIndent = TextIndent(firstLine = baseIndent, restLine = baseIndent)
+                        )
+                    ) {
+                        withStyle(
+                            SpanStyle(
+                                fontWeight = if (isLineBold) FontWeight.Bold else defaultFontWeight,
+                                color = color
+                            )
+                        ) {
+                            append(trimmed)
+                        }
+                    }
+                }
+            }
+            if (index < lines.size - 1) {
+                append("\n")
+            }
+        }
+    }
+}
+
+@Composable
+private fun DiagramaText(
+    text: String,
+    color: Color,
+    targetFontSize: Double,
+    fontWeight: FontWeight,
+    textAlign: TextAlign = TextAlign.Start,
+    modifier: Modifier = Modifier
+) {
+    val fontSizeSp = (targetFontSize.coerceAtLeast(13.0) + 0.5).sp
+
+    val annotatedText = remember(text, fontSizeSp, color, textAlign, fontWeight) {
+        construirAnnotatedDiagramaString(
+            text = text,
+            fontSizeSp = fontSizeSp,
+            color = color,
+            defaultFontWeight = fontWeight,
+            textAlign = textAlign
+        )
+    }
+
+    Text(
+        text = annotatedText,
+        fontSize = fontSizeSp,
+        lineHeight = (fontSizeSp.value * 1.38f).sp,
+        textAlign = textAlign,
+        softWrap = true,
+        modifier = modifier
+    )
+}
+
 @Composable
 private fun ElementoDiagramaCard(
     elemento: ElementoDiagrama,
@@ -235,11 +388,17 @@ private fun ElementoDiagramaCard(
 ) {
     val texto = obtenerTextoElemento(elemento, protocolo)
     val colorTexto = when (elemento.tipo) {
-        "opcion" -> if (isDark) Color(0xFFEF5350) else Color(0xFFD32F2F)
-        "amarillo" -> Color(0xFF212121)
+        "opcion" -> if (isDark) Color(0xFFEF5350) else Color(0xFFC53030)
+        "amarillo" -> Color(0xFF1A202C)
+        "salmon" -> if (isDark) Color(0xFFFFEAE4) else Color(0xFF381005)
+        "celeste" -> if (isDark) Color(0xFFEBF8FF) else Color(0xFF0A2540)
         "alerta" -> if (isDark) Color(0xFFFFE082) else Color(0xFF5D4037)
-        else -> if (isDark) Color.White else Color(0xFF212121)
+        else -> if (isDark) Color(0xFFF1F5F9) else Color(0xFF0F172A)
     }
+
+    val esConcepto = esConceptoElemento(elemento, texto)
+    val alineacionContenedor = if (esConcepto) Alignment.Center else Alignment.TopStart
+    val alineacionTexto = if (esConcepto) TextAlign.Center else TextAlign.Start
 
     when (elemento.tipo) {
         "opcion" -> {
@@ -247,37 +406,88 @@ private fun ElementoDiagramaCard(
                 modifier = Modifier
                     .fillMaxSize()
                     .clip(CircleShape)
-                    .background(canvasBgColor)
-                    .border(2.5.dp, if (isDark) Color(0xFFEF5350) else Color(0xFFD32F2F), CircleShape),
+                    .background(if (isDark) Color(0xFF1E293B) else Color.White)
+                    .border(2.5.dp, if (isDark) Color(0xFFEF5350) else Color(0xFFC53030), CircleShape)
+                    .padding(4.dp),
                 contentAlignment = Alignment.Center
             ) {
-                Text(
+                DiagramaText(
                     text = texto,
                     color = colorTexto,
-                    fontSize = elemento.fontSize.sp,
+                    targetFontSize = elemento.fontSize,
                     fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(6.dp)
+                    textAlign = TextAlign.Center
                 )
             }
         }
 
         "amarillo" -> {
+            val yellowGradient = if (elemento.id == "abcde") {
+                Brush.verticalGradient(listOf(Color(0xFFFFD54F), Color(0xFFF57F17)))
+            } else {
+                Brush.verticalGradient(listOf(Color(0xFFFFF176), Color(0xFFFBC02D)))
+            }
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .shadow(elevation = 2.dp, shape = RoundedCornerShape(8.dp))
-                    .clip(RoundedCornerShape(8.dp))
-                    .background(Color(0xFFFDD835))
-                    .padding(8.dp),
-                contentAlignment = Alignment.Center
+                    .shadow(elevation = 2.dp, shape = RoundedCornerShape(10.dp))
+                    .clip(RoundedCornerShape(10.dp))
+                    .background(yellowGradient)
+                    .border(1.5.dp, Color(0xFFE65100), RoundedCornerShape(10.dp))
+                    .padding(horizontal = 14.dp, vertical = 10.dp),
+                contentAlignment = alineacionContenedor
             ) {
-                Text(
+                DiagramaText(
                     text = texto,
                     color = colorTexto,
-                    fontSize = elemento.fontSize.sp,
+                    targetFontSize = elemento.fontSize,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = alineacionTexto,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+        }
+
+        "salmon" -> {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .shadow(elevation = 2.dp, shape = RoundedCornerShape(10.dp))
+                    .clip(RoundedCornerShape(10.dp))
+                    .background(if (isDark) Color(0xFF782E1E) else Color(0xFFE78267))
+                    .border(1.5.dp, if (isDark) Color(0xFFA0422D) else Color(0xFFC65D43), RoundedCornerShape(10.dp))
+                    .padding(horizontal = 14.dp, vertical = 10.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                DiagramaText(
+                    text = texto,
+                    color = colorTexto,
+                    targetFontSize = elemento.fontSize,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+        }
+
+        "celeste" -> {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .shadow(elevation = 2.dp, shape = RoundedCornerShape(10.dp))
+                    .clip(RoundedCornerShape(10.dp))
+                    .background(if (isDark) Color(0xFF1E3A5F) else Color(0xFF75B5EA))
+                    .border(2.dp, if (isDark) Color(0xFF63B3ED) else Color(0xFF2B6CB0), RoundedCornerShape(10.dp))
+                    .padding(horizontal = 14.dp, vertical = 10.dp),
+                contentAlignment = alineacionContenedor
+            ) {
+                DiagramaText(
+                    text = texto,
+                    color = colorTexto,
+                    targetFontSize = elemento.fontSize,
                     fontWeight = FontWeight.SemiBold,
-                    textAlign = TextAlign.Center
+                    textAlign = alineacionTexto,
+                    modifier = Modifier.fillMaxWidth()
                 )
             }
         }
@@ -286,18 +496,20 @@ private fun ElementoDiagramaCard(
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .clip(RoundedCornerShape(8.dp))
-                    .background(if (isDark) Color(0xFF4A3400) else Color(0xFFFFE59A))
-                    .border(1.5.dp, Color(0xFFFFA000), RoundedCornerShape(8.dp))
-                    .padding(8.dp),
-                contentAlignment = Alignment.Center
+                    .shadow(elevation = 2.dp, shape = RoundedCornerShape(10.dp))
+                    .clip(RoundedCornerShape(10.dp))
+                    .background(if (isDark) Color(0xFF5A4108) else Color(0xFFFFECB3))
+                    .border(1.5.dp, Color(0xFFFFA000), RoundedCornerShape(10.dp))
+                    .padding(horizontal = 14.dp, vertical = 10.dp),
+                contentAlignment = alineacionContenedor
             ) {
-                Text(
+                DiagramaText(
                     text = texto,
                     color = colorTexto,
-                    fontSize = elemento.fontSize.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    textAlign = TextAlign.Center
+                    targetFontSize = elemento.fontSize,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = alineacionTexto,
+                    modifier = Modifier.fillMaxWidth()
                 )
             }
         }
@@ -309,15 +521,16 @@ private fun ElementoDiagramaCard(
                     .clip(RoundedCornerShape(6.dp))
                     .background(if (isDark) Color(0xFF1E293B) else Color(0xFFE0E0E0))
                     .border(1.dp, if (isDark) Color(0xFF475569) else Color(0xFF9E9E9E), RoundedCornerShape(6.dp))
-                    .padding(8.dp),
+                    .padding(horizontal = 14.dp, vertical = 10.dp),
                 contentAlignment = Alignment.Center
             ) {
-                Text(
+                DiagramaText(
                     text = texto,
                     color = colorTexto,
-                    fontSize = elemento.fontSize.sp,
+                    targetFontSize = elemento.fontSize,
                     fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth()
                 )
             }
         }
@@ -326,18 +539,20 @@ private fun ElementoDiagramaCard(
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .clip(RoundedCornerShape(8.dp))
+                    .shadow(elevation = 1.dp, shape = RoundedCornerShape(10.dp))
+                    .clip(RoundedCornerShape(10.dp))
                     .background(if (isDark) Color(0xFF1E293B) else Color.White)
-                    .border(3.dp, Color(0xFF416FC0), RoundedCornerShape(8.dp))
-                    .padding(8.dp),
-                contentAlignment = Alignment.Center
+                    .border(2.5.dp, Color(0xFF2B6CB0), RoundedCornerShape(10.dp))
+                    .padding(horizontal = 14.dp, vertical = 10.dp),
+                contentAlignment = alineacionContenedor
             ) {
-                Text(
+                DiagramaText(
                     text = texto,
                     color = colorTexto,
-                    fontSize = elemento.fontSize.sp,
+                    targetFontSize = elemento.fontSize,
                     fontWeight = FontWeight.SemiBold,
-                    textAlign = TextAlign.Center
+                    textAlign = alineacionTexto,
+                    modifier = Modifier.fillMaxWidth()
                 )
             }
         }
@@ -366,11 +581,165 @@ private fun obtenerTextoElemento(elemento: ElementoDiagrama, protocolo: Protocol
     return ""
 }
 
-private fun DrawScope.obtenerPuntoAncla(elemento: ElementoDiagrama, posicion: String): Offset {
-    val x = elemento.x.dp.toPx()
-    val y = elemento.y.dp.toPx()
-    val w = elemento.width.dp.toPx()
-    val h = elemento.height.dp.toPx()
+private data class ElementoLayout(
+    val elemento: ElementoDiagrama,
+    val x: Dp,
+    val y: Dp,
+    val width: Dp,
+    val height: Dp
+)
+
+@Composable
+private fun rememberDiagramaLayout(
+    diagrama: DiagramaProtocolo,
+    protocolo: Protocolo,
+    density: androidx.compose.ui.unit.Density,
+    textMeasurer: TextMeasurer
+): Pair<List<ElementoLayout>, Dp> {
+    return remember(diagrama, protocolo) {
+        val factorY = 1.35f
+        val paddingHorizontalPx = with(density) { 36.dp.toPx() }
+        val paddingVerticalPx = with(density) { 32.dp.toPx() }
+        val verticalBufferPx = with(density) { 24.dp.toPx() }
+
+        // Paso 1: Medir la altura requerida por cada elemento garantizando legibilidad total
+        val alturasRequeridas = diagrama.elementos.associate { elem ->
+            val texto = obtenerTextoElemento(elem, protocolo)
+            val fontSizeSp = (elem.fontSize.coerceAtLeast(13.0) + 0.5).sp
+            val anchoTextoPx = (with(density) { elem.width.dp.toPx() } - paddingHorizontalPx).coerceAtLeast(40f)
+
+            val esConcepto = esConceptoElemento(elem, texto)
+            val alineacion = if (esConcepto) TextAlign.Center else TextAlign.Start
+
+            val annotatedText = construirAnnotatedDiagramaString(
+                text = texto,
+                fontSizeSp = fontSizeSp,
+                color = Color.Black,
+                defaultFontWeight = FontWeight.SemiBold,
+                textAlign = alineacion
+            )
+
+            val textResult = textMeasurer.measure(
+                text = annotatedText,
+                style = TextStyle(
+                    fontSize = fontSizeSp,
+                    lineHeight = (fontSizeSp.value * 1.38f).sp
+                ),
+                constraints = Constraints(maxWidth = anchoTextoPx.toInt())
+            )
+
+            val alturaMinimaPx = with(density) { elem.height.dp.toPx() }
+            val alturaCalculadaPx = textResult.size.height + paddingVerticalPx + verticalBufferPx
+            val alturaFinalPx = maxOf(alturaMinimaPx, alturaCalculadaPx)
+            elem.id to with(density) { alturaFinalPx.toDp() }
+        }
+
+        // Paso 2: Escalamiento proporcional de base
+        val posicionesY = mutableMapOf<String, Dp>()
+        for (elem in diagrama.elementos) {
+            posicionesY[elem.id] = (elem.y * factorY).dp
+        }
+
+        // Paso 3: Relajación iterativa multidireccional hasta convergencia (garantía anti-solapamiento)
+        val minBoxGap = 36.dp
+        val minArrowGap = 44.dp
+        val minArrowGapWithLabel = 54.dp
+
+        var iteracion = 0
+        var huboCambio = true
+        while (huboCambio && iteracion < 50) {
+            huboCambio = false
+            iteracion++
+
+            // Regla A: Conexiones de flujo directo hacia abajo (las flechas crecen en proporción)
+            for (conexion in diagrama.conexiones) {
+                val desde = diagrama.elementos.find { it.id == conexion.desde }
+                val hasta = diagrama.elementos.find { it.id == conexion.hasta }
+                if (desde != null && hasta != null) {
+                    val esHaciaAbajo = conexion.salida != "derecha" && conexion.salida != "izquierda" && hasta.y >= desde.y
+                    if (esHaciaAbajo) {
+                        val yDesde = posicionesY[desde.id] ?: (desde.y * factorY).dp
+                        val hDesde = alturasRequeridas[desde.id] ?: desde.height.dp
+                        val yHasta = posicionesY[hasta.id] ?: (hasta.y * factorY).dp
+                        val gapRequerido = if (!conexion.etiqueta.isNullOrEmpty()) minArrowGapWithLabel else minArrowGap
+                        val yMinima = yDesde + hDesde + gapRequerido
+                        if (yHasta < yMinima) {
+                            posicionesY[hasta.id] = yMinima
+                            huboCambio = true
+                        }
+                    }
+                }
+            }
+
+            // Regla B: Separación espacial entre cuadros que comparten columna o franja horizontal
+            for (i in 0 until diagrama.elementos.size) {
+                val elemA = diagrama.elementos[i]
+                val yA = posicionesY[elemA.id] ?: (elemA.y * factorY).dp
+                val hA = alturasRequeridas[elemA.id] ?: elemA.height.dp
+
+                for (j in 0 until diagrama.elementos.size) {
+                    if (i == j) continue
+                    val elemB = diagrama.elementos[j]
+
+                    // Si elemB estaba originalmente debajo de elemA en el diagrama
+                    if (elemB.y > elemA.y) {
+                        val solapanX = elemB.x < (elemA.x + elemA.width) && (elemB.x + elemB.width) > elemA.x
+                        if (solapanX) {
+                            val yB = posicionesY[elemB.id] ?: (elemB.y * factorY).dp
+                            val yMinima = yA + hA + minBoxGap
+                            if (yB < yMinima) {
+                                posicionesY[elemB.id] = yMinima
+                                huboCambio = true
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Regla C: Mantener alineadas las bifurcaciones y ramas hermanas (mismo Y original)
+            val gruposPorYOriginal = diagrama.elementos.groupBy { it.y }
+            for ((_, grupo) in gruposPorYOriginal) {
+                if (grupo.size > 1) {
+                    val maxY = grupo.map { posicionesY[it.id] ?: (it.y * factorY).dp }.maxOrNull() ?: continue
+                    for (elem in grupo) {
+                        val currentY = posicionesY[elem.id] ?: (elem.y * factorY).dp
+                        if (currentY < maxY) {
+                            posicionesY[elem.id] = maxY
+                            huboCambio = true
+                        }
+                    }
+                }
+            }
+        }
+
+        // Construir la lista final de layout
+        val listaLayout = diagrama.elementos.map { elem ->
+            ElementoLayout(
+                elemento = elem,
+                x = elem.x.dp,
+                y = posicionesY[elem.id] ?: (elem.y * factorY).dp,
+                width = elem.width.dp,
+                height = alturasRequeridas[elem.id] ?: elem.height.dp
+            )
+        }
+
+        val alturaMaxima = (listaLayout.maxOfOrNull { it.y + it.height } ?: (diagrama.height * factorY).dp) + 120.dp
+        val alturaTotal = maxOf((diagrama.height * factorY).dp, alturaMaxima)
+
+        Pair(listaLayout, alturaTotal)
+    }
+}
+
+private fun DrawScope.obtenerPuntoAncla(
+    layoutMap: Map<String, ElementoLayout>,
+    elementoId: String,
+    posicion: String
+): Offset {
+    val layout = layoutMap[elementoId] ?: return Offset.Zero
+    val x = layout.x.toPx()
+    val y = layout.y.toPx()
+    val w = layout.width.toPx()
+    val h = layout.height.toPx()
 
     return when (posicion) {
         "izquierda" -> Offset(x, y + h / 2f)
@@ -442,27 +811,39 @@ private fun DrawScope.dibujarEtiqueta(
         Offset((start.x + end.x) / 2f, middleY)
     }
 
-    val textColor = if (isDark) Color.White else Color(0xFF1E293B)
+    val textColor = if (isDark) Color(0xFFF1F5F9) else Color(0xFF0F172A)
+    val labelBgColor = if (isDark) Color(0xFF1E293B) else Color.White
+    val labelBorderColor = if (isDark) Color(0xFF475569) else Color(0xFFCBD5E1)
+
     val textResult = textMeasurer.measure(
         text = texto,
         style = TextStyle(
-            fontSize = 12.sp,
+            fontSize = 11.sp,
             fontWeight = FontWeight.Bold,
             color = textColor
         )
     )
 
-    val padX = 8f
-    val padY = 4f
+    val padX = 10f
+    val padY = 6f
     val rectWidth = textResult.size.width + padX * 2
     val rectHeight = textResult.size.height + padY * 2
+    val topLeft = Offset(midpoint.x - rectWidth / 2f, midpoint.y - rectHeight / 2f)
 
     // Fondo del label
     drawRoundRect(
-        color = canvasColor,
-        topLeft = Offset(midpoint.x - rectWidth / 2f, midpoint.y - rectHeight / 2f),
+        color = labelBgColor,
+        topLeft = topLeft,
         size = Size(rectWidth, rectHeight),
         cornerRadius = CornerRadius(6f, 6f)
+    )
+
+    drawRoundRect(
+        color = labelBorderColor,
+        topLeft = topLeft,
+        size = Size(rectWidth, rectHeight),
+        cornerRadius = CornerRadius(6f, 6f),
+        style = Stroke(width = 1.5f)
     )
 
     // Texto

@@ -5,6 +5,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -20,10 +21,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.samuapp.domain.model.NodoProtocolo
 import com.example.samuapp.domain.model.Protocolo
+import com.example.samuapp.ui.theme.LocalDarkTheme
 
 @Composable
 fun VistaPasoAPaso(
@@ -37,7 +40,7 @@ fun VistaPasoAPaso(
     val historialNodos = remember(protocolo.id) { mutableStateListOf<String>() }
 
     val nodo: NodoProtocolo? = protocolo.nodos[nodoActualId]
-    val isDark = isSystemInDarkTheme()
+    val isDark = LocalDarkTheme.current
 
     if (nodo == null) {
         Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -117,11 +120,10 @@ fun VistaPasoAPaso(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // Texto principal del nodo
-                Text(
-                    text = nodo.texto,
-                    style = MaterialTheme.typography.headlineSmall,
-                    fontWeight = FontWeight.Bold
+                // Texto principal del nodo con soporte para listas indexadas
+                TextoProtocoloIndexado(
+                    texto = nodo.texto,
+                    isDark = isDark
                 )
 
                 // Instrucción clínica extra (recuadro ámbar)
@@ -269,6 +271,129 @@ private fun obtenerColorTipo(tipo: String, isDark: Boolean): Color {
             "pregunta" -> Color(0xFF1565C0)
             "droga" -> Color(0xFFC62828)
             else -> Color(0xFF00695C)
+        }
+    }
+}
+
+@Composable
+private fun TextoProtocoloIndexado(
+    texto: String,
+    isDark: Boolean,
+    modifier: Modifier = Modifier
+) {
+    val lineas = remember(texto) { texto.split("\n").map { it.trim() }.filter { it.isNotEmpty() } }
+
+    val esLista = lineas.any { linea ->
+        linea.matches(Regex("""^(\d+[\.\)]|[▪•✓\-\*✔☑]).*"""))
+    }
+
+    if (!esLista) {
+        val esPregunta = texto.trim().startsWith("¿") || texto.trim().endsWith("?")
+        Text(
+            text = texto,
+            style = MaterialTheme.typography.headlineSmall,
+            fontWeight = FontWeight.Bold,
+            textAlign = if (esPregunta) TextAlign.Center else TextAlign.Start,
+            modifier = if (esPregunta) modifier.fillMaxWidth() else modifier
+        )
+        return
+    }
+
+    Column(
+        modifier = modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(10.dp)
+    ) {
+        lineas.forEach { linea ->
+            val numMatch = Regex("""^(\d+)[\.\)]\s*(.*)$""").find(linea)
+            val bulletMatch = Regex("""^([▪•✓\-\*✔☑])\s*(.*)$""").find(linea)
+
+            when {
+                numMatch != null -> {
+                    val numero = numMatch.groupValues[1]
+                    val contenido = numMatch.groupValues[2]
+
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clip(RoundedCornerShape(10.dp))
+                            .background(if (isDark) Color(0xFF1E293B) else Color(0xFFF1F5F9))
+                            .border(1.dp, if (isDark) Color(0xFF334155) else Color(0xFFE2E8F0), RoundedCornerShape(10.dp))
+                            .padding(horizontal = 14.dp, vertical = 10.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        // Badge circular con el número del paso
+                        Box(
+                            modifier = Modifier
+                                .size(28.dp)
+                                .clip(CircleShape)
+                                .background(MaterialTheme.colorScheme.primary),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = numero,
+                                color = MaterialTheme.colorScheme.onPrimary,
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
+
+                        Spacer(modifier = Modifier.width(12.dp))
+
+                        Text(
+                            text = contenido,
+                            style = MaterialTheme.typography.bodyLarge,
+                            fontWeight = FontWeight.SemiBold,
+                            color = MaterialTheme.colorScheme.onSurface,
+                            modifier = Modifier.weight(1f)
+                        )
+                    }
+                }
+
+                bulletMatch != null -> {
+                    val contenido = bulletMatch.groupValues[2]
+
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clip(RoundedCornerShape(10.dp))
+                            .background(if (isDark) Color(0xFF1E293B) else Color(0xFFF1F5F9))
+                            .border(1.dp, if (isDark) Color(0xFF334155) else Color(0xFFE2E8F0), RoundedCornerShape(10.dp))
+                            .padding(horizontal = 14.dp, vertical = 10.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        // Icono distintivo de verificación
+                        Icon(
+                            imageVector = Icons.Default.CheckCircle,
+                            contentDescription = null,
+                            tint = if (isDark) Color(0xFF4ADE80) else Color(0xFF16A34A),
+                            modifier = Modifier.size(24.dp)
+                        )
+
+                        Spacer(modifier = Modifier.width(12.dp))
+
+                        Text(
+                            text = contenido,
+                            style = MaterialTheme.typography.bodyLarge,
+                            fontWeight = FontWeight.SemiBold,
+                            color = MaterialTheme.colorScheme.onSurface,
+                            modifier = Modifier.weight(1f)
+                        )
+                    }
+                }
+
+                else -> {
+                    // Encabezado o condición (ej: "¿SIGNOS DE INESTABILIDAD...?" o "Manejo:")
+                    val esPregunta = linea.trim().startsWith("¿") || linea.trim().endsWith("?")
+                    Text(
+                        text = linea,
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.primary,
+                        textAlign = if (esPregunta) TextAlign.Center else TextAlign.Start,
+                        modifier = Modifier.fillMaxWidth().padding(top = 6.dp, bottom = 2.dp)
+                    )
+                }
+            }
         }
     }
 }

@@ -25,45 +25,35 @@
   "nodo_inicial": "nodo_criterios_sospecha",
   "diagrama": {
     "width": 1400,
-    "height": 1850,
+    "height": 1480,
     "elementos": [
-      {
-        "id": "titulo",
-        "tipo": "titulo",
-        "x": 350,
-        "y": 20,
-        "width": 700,
-        "height": 55,
-        "texto": "SINDROME CORONARIO",
-        "font_size": 20
-      },
       {
         "id": "criterios_sospecha",
         "tipo": "azul",
-        "x": 200,
-        "y": 95,
-        "width": 1000,
-        "height": 95,
+        "x": 180,
+        "y": 20,
+        "width": 1040,
+        "height": 105,
         "nodo_id": "nodo_criterios_sospecha",
         "texto": "CONTROLAR ELECTROCARDIOGRAMA DE 12 DERIVACIONES A TODO PACIENTE QUE REFIERA DOLOR TORÁCICO DE TIPO OPRESIVO, CON O SIN IRRADIACIÓN, QUE NO CEDE CON EL REPOSO Y DE MAS DE 20 MINUTOS DE DURACIÓN.",
-        "font_size": 13
+        "font_size": 14
       },
       {
         "id": "medidas_generales",
         "tipo": "azul",
-        "x": 150,
-        "y": 230,
-        "width": 1100,
-        "height": 220,
+        "x": 130,
+        "y": 155,
+        "width": 1140,
+        "height": 275,
         "nodo_id": "nodo_medidas_generales",
-        "texto": "• CONTROLAR Y TRANSMITIR ELECTROCARDIOGRAMA DE 12 DERIVACIONES A C.R.\n• ADMINISTRAR OXIGENO SUPLEMENTARIO PARA MANTENER OXIMETRÍA DE PULSO > O IGUAL A 95%\n• MONITORIZAR ELECTROCARDIOGRÁFICAMENTE, CONTROL DE SIGNOS VITALES E INSTALAR ACCESO INTRAVENOSO\n• IAM C/SDST ADMINISTRAR SI NO EXISTE CONTRAINDICACIÓN:\n  ✓ ASPIRINA 500 MG A MASTICAR\n  ✓ CLOPIDOGREL 300 MG V.O (Mayores de 75 años 75 mg VO – 600 mg si APP o Trombolisis PH)\n  ✓ ATORVASTATINA 80 MG V.O\n  ✓ MANEJO DEL DOLOR MORFINA 2 a 4 Mg EV (1° DESCARTAR COMPROMISO VD)",
-        "font_size": 12.5
+        "texto": "• CONTROLAR Y TRANSMITIR ELECTROCARDIOGRAMA DE 12 DERIVACIONES A C.R.\n• ADMINISTRAR OXIGENO SUPLEMENTARIO PARA MANTENER OXIMETRÍA DE PULSO > O IGUAL A 95%\n• MONITORIZAR ELECTROCARDIOGRÁFICAMENTE, CONTROL DE SIGNOS VITALES E INSTALAR ACCESO INTRAVENOSO\n• IAM C/SDST ADMINISTRAR SI NO EXISTE CONTRAINDICACIÓN:\n  ✓ ASPIRINA 500 MG A MASTICAR\n  ✓ CLOPIDROGREL 300 MG V.O (Mayores de 75 años 75 mg VO – 600 mg si APP o Trombolisis PH)\n  ✓ ATORVASTATINA 80 MG V.O\n  ✓ MANEJO DEL DOLOR MORFINA 2 a 4 Mg EV (1º DESCARTAR COMPROMISO VD)",
+        "font_size": 13
       },
       {
         "id": "iam_sin_sdst",
         "tipo": "azul",
         "x": 230,
-        "y": 490,
+        "y": 465,
         "width": 320,
         "height": 55,
         "texto": "IAM SIN SDST",
@@ -72,19 +62,19 @@
       {
         "id": "iam_sin_sdst_manejo",
         "tipo": "azul",
-        "x": 200,
-        "y": 580,
-        "width": 380,
-        "height": 80,
+        "x": 190,
+        "y": 555,
+        "width": 400,
+        "height": 85,
         "nodo_id": "nodo_iam_sin_sdst",
         "texto": "▪ Antecedentes cardiovasculares\n▪ Trasladar monitorizado",
-        "font_size": 13
+        "font_size": 14
       },
       {
         "id": "iam_con_sdst",
         "tipo": "azul",
         "x": 740,
-        "y": 490,
+        "y": 465,
         "width": 300,
         "height": 55,
         "texto": "IAM CON SDST",
@@ -92,19 +82,19 @@
       },
       {
         "id": "alerta_vd",
-        "tipo": "alerta",
-        "x": 1080,
-        "y": 465,
-        "width": 280,
-        "height": 100,
+        "tipo": "salmon",
+        "x": 1070,
+        "y": 435,
+        "width": 300,
+        "height": 115,
         "texto": "En caso de SDST en AVF, DII y /o DIII controlar precordiales derechas\n(V3r y V4r)",
-        "font_size": 12.5
+        "font_size": 13
       },
       {
         "id": "activar_codigo_iam",
-        "tipo": "azul",
+        "tipo": "celeste",
         "x": 740,
-        "y": 580,
+        "y": 555,
         "width": 300,
         "height": 55,
         "nodo_id": "nodo_iam_con_sdst",
@@ -113,80 +103,80 @@
       },
       {
         "id": "signos_congestion_lista",
-        "tipo": "alerta",
-        "x": 40,
-        "y": 665,
-        "width": 260,
-        "height": 220,
+        "tipo": "amarillo",
+        "x": 35,
+        "y": 645,
+        "width": 280,
+        "height": 245,
         "nodo_id": "nodo_congestion_estable",
         "texto": "Signos congestión\n▪ Ingurgitación yugular\n▪ Ortopnea\n▪ Ruidos húmedos en bases pulmonares\n▪ Edema de extremidades inferiores y /o superiores\n▪ Anasarca",
-        "font_size": 12.5
+        "font_size": 13
       },
       {
         "id": "signos_congestion_estable",
         "tipo": "amarillo",
-        "x": 40,
+        "x": 35,
         "y": 925,
-        "width": 260,
-        "height": 85,
+        "width": 280,
+        "height": 95,
         "nodo_id": "nodo_congestion_estable",
         "texto": "Signos de congestión con estabilidad hemodinámica",
-        "font_size": 13
+        "font_size": 13.5
       },
       {
         "id": "consultar_epa",
         "tipo": "azul",
-        "x": 60,
-        "y": 1050,
-        "width": 220,
-        "height": 65,
+        "x": 55,
+        "y": 1055,
+        "width": 240,
+        "height": 70,
         "nodo_id": "nodo_congestion_estable",
         "texto": "Consultar protocolo EPA",
-        "font_size": 13
+        "font_size": 13.5
       },
       {
         "id": "pregunta_inestabilidad",
         "tipo": "azul",
-        "x": 520,
-        "y": 665,
-        "width": 560,
-        "height": 135,
+        "x": 500,
+        "y": 645,
+        "width": 620,
+        "height": 160,
         "nodo_id": "pregunta_inestabilidad",
-        "texto": "¿SIGNOS DE INESTABILIDAD HEMODINAMICA?\n▪ Agitado\n▪ Uso De Musculatura Accesoria, Fatiga Muscular\n▪ Frecuencia Respiratoria > 30 Por Minuto\n▪ Frecuencia Cardiaca >120 Por Minuto",
-        "font_size": 13
+        "texto": "¿SIGNOS DE INESTABILIDAD HEMODINAMICA?\n▪ Agitado\n▪ Uso De Musculatura Accesoria / Fatiga Muscular\n▪ Frecuencia Respiratoria > 30 Por Minuto\n▪ Frecuencia Cardiaca > 120 Por Minuto",
+        "font_size": 13.5
       },
       {
         "id": "inestable_con_congestion",
         "tipo": "azul",
         "x": 330,
         "y": 845,
-        "width": 460,
-        "height": 375,
+        "width": 480,
+        "height": 430,
         "nodo_id": "nodo_inestable_con_congestion",
-        "texto": "Inestabilidad hemodinámica con signos de congestión (PAM < 65 mmHg):\n▪ Valorar estado conciencia y manejo vía aérea\n▪ Reposo en posición fowler.\n▪ Administrar oxigeno suplementario\n▪ Furosemida 40 a 80 mg IV\n▪ Instalar segundo acceso IV\n\nSi persiste PAM< 65 mmHg:\n▪ Considerar Noradrenalina 8 mg/250 ml, iniciar a 0,05 ug/kilo/min titular según PANI",
-        "font_size": 12
+        "texto": "Inestabilidad hemodinámica con signos de congestión (PAM < 65 mmHg):\n▪ Valorar estado conciencia y manejo vía aérea\n▪ Reposo en posición fowler.\n▪ Administrar oxigeno suplementario\n▪ Furosemida 40 a 80 mg IV\n▪ Instalar segundo acceso IV\n\nSi persiste PAM < 65 mmHg:\n▪ Considerar Noradrenalina 8 mg/250 ml, iniciar a 0,05 ug/kilo/min titular según PANI",
+        "font_size": 13
       },
       {
         "id": "inestable_sin_congestion",
         "tipo": "azul",
-        "x": 830,
+        "x": 840,
         "y": 845,
-        "width": 480,
-        "height": 375,
+        "width": 490,
+        "height": 430,
         "nodo_id": "nodo_inestable_sin_congestion",
-        "texto": "En caso de inestabilidad hemodinámica (PAM<65 mmHg) sin signos de congestión o Compromiso de VD:\n▪ Valorar estado conciencia y manejo vía aérea\n▪ Administrar oxigeno suplementario a máxima concentración.\n▪ Administrar solución salina tibia 250/500 ml IV. Considerar un segundo bolus.\n▪ Considerar Fentanilo en caso de dolor severo\n▪ Instalar segundo acceso IV\n\nSi persiste PAM< 65 mmHg:\n▪ Considerar Noradrenalina 8 mg/250 ml, iniciar a 0,05 ug/kilo/min titular según PANI",
-        "font_size": 12
+        "texto": "En caso de inestabilidad hemodinámica (PAM < 65 mmHg) sin signos de congestión o Compromiso de VD:\n▪ Valorar estado conciencia y manejo vía aérea\n▪ Administrar oxigeno suplementario a máxima concentración.\n▪ Administrar solución salina tibia 250/500 ml IV. Considerar un segundo bolus.\n▪ Considerar Fentanilo en caso de dolor severo\n▪ Instalar segundo acceso IV\n\nSi persiste PAM < 65 mmHg:\n▪ Considerar Noradrenalina 8 mg/250 ml, iniciar a 0,05 ug/kilo/min titular según PANI",
+        "font_size": 13
       },
       {
         "id": "trombolisis_info",
-        "tipo": "azul",
-        "x": 320,
-        "y": 1265,
-        "width": 780,
-        "height": 200,
+        "tipo": "celeste",
+        "x": 290,
+        "y": 1315,
+        "width": 820,
+        "height": 215,
         "nodo_id": "nodo_dosis_tenecteplase",
         "texto": "*Indicación de Trombolisis Prehospitalaria:\n✓ Duración del dolor > 30 min y < 12 horas\n✓ IAM C/SDST (*) o presunto nuevo Bloqueo de RI\n✓ Imposibilidad de acceder a APP\n✓ Inexistencia de contraindicaciones absolutas\n\nIndicación: TENECTEPLASE EV Según indicación MR",
-        "font_size": 13
+        "font_size": 13.5
       }
     ],
     "conexiones": [
