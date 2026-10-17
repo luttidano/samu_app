@@ -17,6 +17,8 @@ import androidx.compose.material.icons.outlined.Cancel
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.Saver
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -34,6 +36,41 @@ import com.example.samuapp.presentation.components.ListaProtocolosDialog
 import com.example.samuapp.presentation.components.TarjetaAlertasProtocolo
 import com.example.samuapp.presentation.components.TarjetaPreparacionProtocolo
 import kotlinx.coroutines.launch
+
+private val DatosPacienteNullableSaver = Saver<DatosPaciente?, Any>(
+    save = { datos ->
+        if (datos == null) {
+            "__NULL__"
+        } else {
+            mapOf(
+                "urgencia" to datos.urgencia,
+                "sexo" to datos.sexo,
+                "pesoKg" to datos.pesoKg,
+                "esValido" to datos.esValido,
+                "requiereConfirmacion" to datos.requiereConfirmacion,
+                "motivos" to ArrayList(datos.motivos),
+                "confirmadoPorUsuario" to datos.confirmadoPorUsuario
+            )
+        }
+    },
+    restore = { saved ->
+        if (saved == "__NULL__") {
+            null
+        } else {
+            @Suppress("UNCHECKED_CAST")
+            val map = saved as Map<String, Any?>
+            DatosPaciente(
+                urgencia = map["urgencia"] as? String,
+                sexo = map["sexo"] as? String,
+                pesoKg = (map["pesoKg"] as? Number)?.toDouble(),
+                esValido = (map["esValido"] as? Boolean) ?: false,
+                requiereConfirmacion = (map["requiereConfirmacion"] as? Boolean) ?: true,
+                motivos = (map["motivos"] as? List<*>)?.filterIsInstance<String>() ?: emptyList(),
+                confirmadoPorUsuario = (map["confirmadoPorUsuario"] as? Boolean) ?: false
+            )
+        }
+    }
+)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -53,10 +90,11 @@ fun MainScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
 
-    var mostrarDialogoValidacion by remember { mutableStateOf(false) }
-    var datosParaValidar by remember { mutableStateOf<DatosPaciente?>(null) }
-    var mostrarCatalogo by remember { mutableStateOf(false) }
-    var mostrarDialogoBuscarRun by remember { mutableStateOf(false) }
+    var mostrarDialogoValidacion by rememberSaveable { mutableStateOf(false) }
+    var esValidacionManual by rememberSaveable { mutableStateOf(false) }
+    var datosParaValidar by rememberSaveable(stateSaver = DatosPacienteNullableSaver) { mutableStateOf<DatosPaciente?>(null) }
+    var mostrarCatalogo by rememberSaveable { mutableStateOf(false) }
+    var mostrarDialogoBuscarRun by rememberSaveable { mutableStateOf(false) }
 
     val micPermissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission()
@@ -75,6 +113,7 @@ fun MainScreen(
         val datos = vozUiState.datosPaciente
         if (datos != null && !vozUiState.isProcessing) {
             datosParaValidar = datos
+            esValidacionManual = false
             mostrarDialogoValidacion = true
             vozViewModel.consumirDatosPaciente()
         }
@@ -278,6 +317,7 @@ fun MainScreen(
                                 esValido = false,
                                 requiereConfirmacion = true
                             )
+                            esValidacionManual = true
                             mostrarDialogoValidacion = true
                         },
                         enabled = !vozUiState.isProcessing,
@@ -298,7 +338,7 @@ fun MainScreen(
                 }
             }
 
-            // Diálogo de Validar Datos Clínicos
+            // Diálogo de Validar / Ingresar Datos Clínicos
             if (mostrarDialogoValidacion) {
                 ConfirmacionDatosDialog(
                     datosIniciales = datosParaValidar ?: DatosPaciente(
@@ -309,6 +349,7 @@ fun MainScreen(
                         requiereConfirmacion = true
                     ),
                     opcionesProtocolos = indices,
+                    esEntradaManual = esValidacionManual,
                     onDismiss = {
                         mostrarDialogoValidacion = false
                         datosParaValidar = null

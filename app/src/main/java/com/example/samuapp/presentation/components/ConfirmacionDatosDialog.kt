@@ -16,6 +16,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.runtime.saveable.rememberSaveable
 import com.example.samuapp.domain.model.DatosPaciente
 import com.example.samuapp.domain.model.ProtocoloIndice
 
@@ -24,24 +25,25 @@ import com.example.samuapp.domain.model.ProtocoloIndice
 fun ConfirmacionDatosDialog(
     datosIniciales: DatosPaciente,
     opcionesProtocolos: List<ProtocoloIndice>,
+    esEntradaManual: Boolean = false,
     onDismiss: () -> Unit,
     onConfirmar: (DatosPaciente) -> Unit
 ) {
-    var urgenciaSeleccionada by remember { mutableStateOf(datosIniciales.urgencia ?: "") }
-    var textoUrgencia by remember {
+    var urgenciaSeleccionada by rememberSaveable { mutableStateOf(datosIniciales.urgencia ?: "") }
+    var textoUrgencia by rememberSaveable {
         val inicial = opcionesProtocolos.find {
             it.id.equals(datosIniciales.urgencia, ignoreCase = true)
         }?.nombre ?: (datosIniciales.urgencia ?: "")
         mutableStateOf(inicial)
     }
 
-    var sexoSeleccionado by remember { mutableStateOf(datosIniciales.sexo ?: "masculino") }
-    var pesoTexto by remember {
+    var sexoSeleccionado by rememberSaveable { mutableStateOf(datosIniciales.sexo ?: "masculino") }
+    var pesoTexto by rememberSaveable {
         mutableStateOf(datosIniciales.pesoKg?.let { "%.0f".format(it) } ?: "")
     }
 
-    var menuUrgenciaExpandido by remember { mutableStateOf(false) }
-    var menuSexoExpandido by remember { mutableStateOf(false) }
+    var menuUrgenciaExpandido by rememberSaveable { mutableStateOf(false) }
+    var menuSexoExpandido by rememberSaveable { mutableStateOf(false) }
 
     // Filtrar opciones en tiempo real según lo que escribe el usuario (nombre, id o tags)
     val opcionesFiltradas = remember(textoUrgencia, opcionesProtocolos) {
@@ -72,7 +74,7 @@ fun ConfirmacionDatosDialog(
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    text = "Validar Datos Clínicos",
+                    text = if (esEntradaManual) "Ingresar datos clínicos" else "Validar Datos Clínicos",
                     fontWeight = FontWeight.Bold,
                     fontSize = 18.sp
                 )
@@ -85,7 +87,11 @@ fun ConfirmacionDatosDialog(
                     .verticalScroll(rememberScrollState())
             ) {
                 Text(
-                    text = "Verifique o edite los datos dictados antes de continuar:",
+                    text = if (esEntradaManual) {
+                        "Complete los datos del paciente para continuar:"
+                    } else {
+                        "Verifique o edite los datos dictados antes de continuar:"
+                    },
                     fontSize = 13.sp,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )

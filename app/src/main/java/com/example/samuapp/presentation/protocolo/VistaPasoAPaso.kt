@@ -28,13 +28,15 @@ import com.example.samuapp.domain.model.NodoProtocolo
 import com.example.samuapp.domain.model.Protocolo
 import com.example.samuapp.ui.theme.LocalDarkTheme
 
+import androidx.compose.runtime.saveable.rememberSaveable
+
 @Composable
 fun VistaPasoAPaso(
     protocolo: Protocolo,
     nodoInicialId: String? = null,
     modifier: Modifier = Modifier
 ) {
-    var nodoActualId by remember(protocolo.id) {
+    var nodoActualId by rememberSaveable(protocolo.id) {
         mutableStateOf(nodoInicialId ?: protocolo.nodoInicial)
     }
     val historialNodos = remember(protocolo.id) { mutableStateListOf<String>() }

@@ -19,6 +19,7 @@ import androidx.compose.material.icons.filled.PersonSearch
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -46,7 +47,9 @@ fun BuscarPacienteRunDialog(
     onDismiss: () -> Unit,
     onBuscar: (String) -> Unit
 ) {
-    var textFieldValue by remember { mutableStateOf(TextFieldValue("")) }
+    var textFieldValue by rememberSaveable(stateSaver = TextFieldValue.Saver) {
+        mutableStateOf(TextFieldValue(""))
+    }
     val infoRun = remember(textFieldValue.text) { analizarRun(textFieldValue.text) }
 
     fun actualizarTexto(nuevoTexto: String) {

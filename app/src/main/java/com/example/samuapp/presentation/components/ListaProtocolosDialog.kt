@@ -18,6 +18,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.window.Dialog
 import com.example.samuapp.domain.model.ProtocoloIndice
 
@@ -27,7 +28,7 @@ fun ListaProtocolosDialog(
     onDismiss: () -> Unit,
     onSeleccionarProtocolo: (ProtocoloIndice) -> Unit
 ) {
-    var query by remember { mutableStateOf("") }
+    var query by rememberSaveable { mutableStateOf("") }
 
     val filtrados = remember(query, protocolos) {
         if (query.isBlank()) protocolos

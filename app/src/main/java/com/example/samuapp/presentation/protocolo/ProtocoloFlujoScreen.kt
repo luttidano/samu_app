@@ -9,6 +9,7 @@ import androidx.compose.material.icons.filled.AccountTree
 import androidx.compose.material.icons.filled.TouchApp
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import com.example.samuapp.domain.model.Protocolo
@@ -20,7 +21,7 @@ fun ProtocoloFlujoScreen(
     nodoInicialId: String? = null,
     onVolver: () -> Unit
 ) {
-    var pestañaSeleccionada by remember { mutableIntStateOf(0) }
+    var pestañaSeleccionada by rememberSaveable { mutableIntStateOf(0) }
 
     Scaffold(
         topBar = {

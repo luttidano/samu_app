@@ -596,11 +596,11 @@ private fun rememberDiagramaLayout(
     density: androidx.compose.ui.unit.Density,
     textMeasurer: TextMeasurer
 ): Pair<List<ElementoLayout>, Dp> {
-    return remember(diagrama, protocolo) {
+    return remember(diagrama, protocolo, density) {
         val factorY = 1.35f
-        val paddingHorizontalPx = with(density) { 36.dp.toPx() }
+        val paddingHorizontalPx = with(density) { 44.dp.toPx() }
         val paddingVerticalPx = with(density) { 32.dp.toPx() }
-        val verticalBufferPx = with(density) { 24.dp.toPx() }
+        val verticalBufferPx = with(density) { 42.dp.toPx() }
 
         // Paso 1: Medir la altura requerida por cada elemento garantizando legibilidad total
         val alturasRequeridas = diagrama.elementos.associate { elem ->
@@ -628,8 +628,11 @@ private fun rememberDiagramaLayout(
                 constraints = Constraints(maxWidth = anchoTextoPx.toInt())
             )
 
+            val numLines = texto.lines().size
+            val extraMultilineBufferPx = if (numLines > 3) with(density) { (numLines * 4).dp.toPx() } else 0f
+
             val alturaMinimaPx = with(density) { elem.height.dp.toPx() }
-            val alturaCalculadaPx = textResult.size.height + paddingVerticalPx + verticalBufferPx
+            val alturaCalculadaPx = textResult.size.height + paddingVerticalPx + verticalBufferPx + extraMultilineBufferPx
             val alturaFinalPx = maxOf(alturaMinimaPx, alturaCalculadaPx)
             elem.id to with(density) { alturaFinalPx.toDp() }
         }

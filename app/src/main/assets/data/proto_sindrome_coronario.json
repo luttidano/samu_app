@@ -44,7 +44,7 @@
         "x": 130,
         "y": 155,
         "width": 1140,
-        "height": 275,
+        "height": 340,
         "nodo_id": "nodo_medidas_generales",
         "texto": "• CONTROLAR Y TRANSMITIR ELECTROCARDIOGRAMA DE 12 DERIVACIONES A C.R.\n• ADMINISTRAR OXIGENO SUPLEMENTARIO PARA MANTENER OXIMETRÍA DE PULSO > O IGUAL A 95%\n• MONITORIZAR ELECTROCARDIOGRÁFICAMENTE, CONTROL DE SIGNOS VITALES E INSTALAR ACCESO INTRAVENOSO\n• IAM C/SDST ADMINISTRAR SI NO EXISTE CONTRAINDICACIÓN:\n  ✓ ASPIRINA 500 MG A MASTICAR\n  ✓ CLOPIDROGREL 300 MG V.O (Mayores de 75 años 75 mg VO – 600 mg si APP o Trombolisis PH)\n  ✓ ATORVASTATINA 80 MG V.O\n  ✓ MANEJO DEL DOLOR MORFINA 2 a 4 Mg EV (1º DESCARTAR COMPROMISO VD)",
         "font_size": 13
@@ -151,7 +151,7 @@
         "x": 330,
         "y": 845,
         "width": 480,
-        "height": 430,
+        "height": 500,
         "nodo_id": "nodo_inestable_con_congestion",
         "texto": "Inestabilidad hemodinámica con signos de congestión (PAM < 65 mmHg):\n▪ Valorar estado conciencia y manejo vía aérea\n▪ Reposo en posición fowler.\n▪ Administrar oxigeno suplementario\n▪ Furosemida 40 a 80 mg IV\n▪ Instalar segundo acceso IV\n\nSi persiste PAM < 65 mmHg:\n▪ Considerar Noradrenalina 8 mg/250 ml, iniciar a 0,05 ug/kilo/min titular según PANI",
         "font_size": 13
@@ -162,7 +162,7 @@
         "x": 840,
         "y": 845,
         "width": 490,
-        "height": 430,
+        "height": 500,
         "nodo_id": "nodo_inestable_sin_congestion",
         "texto": "En caso de inestabilidad hemodinámica (PAM < 65 mmHg) sin signos de congestión o Compromiso de VD:\n▪ Valorar estado conciencia y manejo vía aérea\n▪ Administrar oxigeno suplementario a máxima concentración.\n▪ Administrar solución salina tibia 250/500 ml IV. Considerar un segundo bolus.\n▪ Considerar Fentanilo en caso de dolor severo\n▪ Instalar segundo acceso IV\n\nSi persiste PAM < 65 mmHg:\n▪ Considerar Noradrenalina 8 mg/250 ml, iniciar a 0,05 ug/kilo/min titular según PANI",
         "font_size": 13
