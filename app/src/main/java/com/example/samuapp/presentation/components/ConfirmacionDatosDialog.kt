@@ -41,7 +41,7 @@ fun ConfirmacionDatosDialog(
     }
     
     var urgenciaSeleccionada by rememberSaveable { 
-        mutableStateOf(protocoloInicial?.nombre ?: (datosIniciales.urgencia ?: "")) 
+        mutableStateOf(protocoloInicial?.id ?: (datosIniciales.urgencia ?: "")) 
     }
     var textoUrgencia by rememberSaveable {
         mutableStateOf(protocoloInicial?.nombre ?: (datosIniciales.urgencia ?: ""))

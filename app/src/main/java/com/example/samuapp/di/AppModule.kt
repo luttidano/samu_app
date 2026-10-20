@@ -1,6 +1,10 @@
 package com.example.samuapp.di
 
 import android.content.Context
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.PreferenceDataStoreFactory
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.preferencesDataStoreFile
 import com.example.samuapp.data.repository.JsonProtocoloRepositoryImpl
 import com.example.samuapp.data.repository.PreferenciasRepositoryImpl
 import com.example.samuapp.data.service.WhisperServiceImpl
@@ -22,6 +26,16 @@ object AppModule {
 
     @Provides
     @Singleton
+    fun provideDataStore(
+        @ApplicationContext context: Context
+    ): DataStore<Preferences> {
+        return PreferenceDataStoreFactory.create(
+            produceFile = { context.preferencesDataStoreFile("samu_preferencias") }
+        )
+    }
+
+    @Provides
+    @Singleton
     fun provideProtocoloRepository(
         @ApplicationContext context: Context
     ): ProtocoloRepository {
@@ -31,9 +45,9 @@ object AppModule {
     @Provides
     @Singleton
     fun providePreferenciasRepository(
-        @ApplicationContext context: Context
+        dataStore: DataStore<Preferences>
     ): PreferenciasRepository {
-        return PreferenciasRepositoryImpl(context)
+        return PreferenciasRepositoryImpl(dataStore)
     }
 
     @Provides

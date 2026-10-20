@@ -140,21 +140,22 @@ class CalculoDosisService {
     private fun obtenerFactorConcentracion(nombreDroga: String, presentacion: String): Double {
         val nom = nombreDroga.lowercase()
         val pres = presentacion.lowercase()
+        
+        // deteccion de porcentajes
+        
+        val matchPct = Regex("""(\d+)?:[.,]\d+)?)\s*%""").find(pres)
+        if (matchPct != null) {
+            val pct = matchPct.groupValues[1].replace(',', '.').toDoubleOrNull() ?: 0.0
+            return if (nom.contains("glucosa")) pct / 100.0 else pct * 10.0
+        }
+        
+        // Deduccion universal por fraccion
 
-        if (nom.contains("glucosa") || pres.contains("30%")) return 0.30
-        if (nom.contains("morfina") || pres.contains("1%")) return 10.0
-        if (nom.contains("furosemida")) return 10.0
-        if (nom.contains("fentanilo")) return 50.0
-        if (nom.contains("diazepam")) return 5.0 // 10 mg / 2mL
-        if (nom.contains("lorazepam")) return 2.0 // 4 mg 7 2 mL
-        if (nom.contains("fenitoina") || nom.contains("fenitoína")) return 50.0 // 250 mg / 5 mL
-        if (nom.contains("fenobarbital")) return 200.0 // 200 mg / 1 ml = 200 mg /mL
-
-        val matchFraccion = Regex("""(\d+(?:[.,]\d+)?)\s*(?:mg|g|gr)\s*/\s*(\d+(?:[.,]\d+)?)?\s*ml""").find(pres)
+        val matchFraccion = Regex("""(\d+(?:[.,]\d+)?)\s*(?:mg|g|gr|ug|mcg)\s*/\s*(\d+(?:[.,]\d+)?)?\s*ml""").find(pres)
         if (matchFraccion != null) {
             val masa = matchFraccion.groupValues[1].replace(',', '.').toDoubleOrNull() ?: 1.0
             val vol = matchFraccion.groupValues.getOrNull(2)?.takeIf { it.isNotEmpty() }?.replace(',', '.')?.toDoubleOrNull() ?: 1.0
-            return masa / vol
+            if (vol > 0) return masa / vol
         }
 
         return 1.0
@@ -166,62 +167,28 @@ class CalculoDosisService {
         volumenMaxMl: Double,
         esInfusion: Boolean
     ): InfoEmpaque {
-        val nombre = droga.nombreDroga.lowercase()
-
-        if (nombre.contains("glucosa")) {
+        if (esInfusion) {
+            return InfoEmpaque(1, "ampolla + matraz", "Llevar mínimo 1 ampolla de ${droga.nombreDroga} + 1 Matraz para BIC")
+        }
+        val pres = droga.presentacion.lowercase()
+        val esComprimido = pres.contains("comprimido") || pres.contains("comp") || pres.contains("sublingual")
+        val tipo = if (esComprimido) "comprimidos" else "ampollas"
+        // Caso especial: Glucosa (su empaque se dosifica por volumen de ampolla de 20 mL)
+        if (droga.nombreDroga.lowercase().contains("glucosa") && volumenMaxMl > 0) {
             val ampollas = ceil(volumenMaxMl / 20.0).toInt().coerceAtLeast(1)
             return InfoEmpaque(ampollas, "ampollas", "Llevar mínimo $ampollas ampollas de Glucosa 30% (de 20 mL c/u)")
         }
-
-        if (nombre.contains("furosemida")) {
-            val ampollas = ceil(dosisMax / 20.0).toInt().coerceAtLeast(1)
-            return InfoEmpaque(ampollas, "ampollas", "Llevar mínimo $ampollas ampollas de Furosemida (de 20 mg c/u)")
+        // Extracción universal de masa por unidad (ej: 4 mg, 10 mg, 20 mg, 25 mg, 200 mg, 250 mg)
+        val matchMasaUnidad = Regex("""(\d+(?:[.,]\d+)?)\s*(?:mg|g|gr|ug|mcg)""").find(pres)
+        if (matchMasaUnidad != null && dosisMax > 0) {
+            val masaUnidad = matchMasaUnidad.groupValues[1].replace(',', '.').toDoubleOrNull() ?: 0.0
+            if (masaUnidad > 0) {
+                val cantidad = ceil(dosisMax / masaUnidad).toInt().coerceAtLeast(1)
+                val unidadTexto = if (cantidad == 1) tipo.removeSuffix("s") else tipo
+                return InfoEmpaque(cantidad, tipo, "Llevar mínimo $cantidad $unidadTexto de ${droga.nombreDroga} (${droga.presentacion})")
+            }
         }
-
-        if (nombre.contains("morfina")) {
-            val ampollas = ceil(dosisMax / 10.0).toInt().coerceAtLeast(1)
-            return InfoEmpaque(ampollas, "ampollas", "Llevar mínimo $ampollas ampolla de Morfina al 1% (10 mg / 1 mL)")
-        }
-
-        if (nombre.contains("captopril")) {
-            val comprimidos = ceil(dosisMax / 25.0).toInt().coerceAtLeast(1)
-            return InfoEmpaque(comprimidos, "comprimidos", "Llevar mínimo $comprimidos comprimido sublingual (de 25 mg)")
-        }
-
-        if (nombre.contains("nitroglicerina")) {
-            return InfoEmpaque(1, "comprimidos", "Llevar mínimo 1 comprimido sublingual (de 0.6 mg)")
-        }
-
-        if (nombre.contains("fentanilo")) {
-            val ampollas = ceil(volumenMaxMl / 2.0).toInt().coerceAtLeast(1)
-            return InfoEmpaque(ampollas, "ampollas", "Llevar mínimo $ampollas ampolla de Fentanilo (100 ug / 2 mL)")
-        }
-        if (nombre.contains("diazepam")) {
-            val ampollas = ceil(dosisMax / 10.0).toInt().coerceAtLeast(1)
-            return InfoEmpaque(ampollas, "ampollas", "Llevar mínimo $ampollas ampolla(s) de Diazepam (10 mg / 2 mL)")
-        }
-        if (nombre.contains("lorazepam")) {
-            val ampollas = ceil(dosisMax / 4.0).toInt().coerceAtLeast(1)
-            return InfoEmpaque(ampollas, "ampollas", "Llevar mínimo $ampollas ampolla(s) de Lorazepam (4 mg / 2 mL)")
-        }
-        if (nombre.contains("midazolam")) {
-            val ampollas = ceil(dosisMax / 5.0).toInt().coerceAtLeast(1)
-            return InfoEmpaque(ampollas, "ampollas", "Llevar mínimo $ampollas ampolla(s) de Midazolam")
-        }
-        if (nombre.contains("fenitoina") || nombre.contains("fenitoína")) {
-            val ampollas = ceil(dosisMax / 250.0).toInt().coerceAtLeast(1)
-            return InfoEmpaque(ampollas, "ampollas", "Llevar mínimo $ampollas ampolla(s) de Fenitoína (250 mg / 5 mL) + Suero Fisiológico")
-        }
-        if (nombre.contains("fenobarbital")) {
-            val ampollas = ceil(dosisMax / 200.0).toInt().coerceAtLeast(1)
-            return InfoEmpaque(ampollas, "ampollas", "Llevar mínimo $ampollas ampolla(s) de Fenobarbital (200 mg / 1 mL)")
-        }
-
-        if (esInfusion) {
-            return InfoEmpaque(1, "ampolla + matraz", "Llevar mínimo 1 ampolla de ${droga.nombreDroga} + 1 Matraz SG 5% 250 mL para BIC")
-        }
-
-        return InfoEmpaque(1, "unidades", "Llevar presentación: ${droga.presentacion}")
+        return InfoEmpaque(1, tipo, "Llevar presentación: ${droga.presentacion}")
     }
 
     private fun generarInsumos(droga: NodoDroga, volMaxMl: Double, empaque: InfoEmpaque): List<String> {

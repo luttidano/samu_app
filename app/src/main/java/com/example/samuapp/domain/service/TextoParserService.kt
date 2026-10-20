@@ -5,27 +5,33 @@ import com.example.samuapp.domain.model.DatosPaciente
 class TextoParserService {
 
     companion object {
+        const val ID_HIPOGLICEMIA = "hipoglicemia"
+        const val ID_HIPERGLICEMIA = "hiperglicemia"
+        const val ID_EPA = "protocolo_edema_pulmon_agudo_001"
+        const val ID_SCA = "protocolo_sindrome_coronario_001"
+        const val ID_CONVULSION = "protocolo_convulsion_001"
+        
         private val DICCIONARIO_URGENCIAS = mapOf(
-            "hipoglicemia" to listOf(
+            ID_HIPOGLICEMIA to listOf(
                 "hipoglicemia", "hipoglucemia", "hipoglisemia", "azucar baja",
                 "glicemia baja", "ipoglicemia", "yporglicemia", "y por glissemia",
                 "y por glisemia", "y por licemia", "y polisemia"
             ),
-            "hiperglicemia" to listOf(
+            ID_HIPERGLICEMIA to listOf(
                 "hiperglicemia", "hiperglucemia", "hiperglisemia", "azucar alta",
                 "glicemia alta", "iperglicemia", "yperglicemia", "y perglicemia",
                 "ypereglesemia", "iperglissemia"
             ),
-            "edema_agudo_pulmon" to listOf(
+            ID_EPA to listOf(
                 "edema agudo de pulmon", "edema agudo pulmonar", "edema pulmonar",
                 "epa", "insuficiencia cardiaca", "insuficiencia cardiaca aguda"
             ),
-            "sindrome_coronario" to listOf(
+            ID_SCA to listOf(
                 "sindrome coronario", "sindrome coronario agudo", "coronario agudo",
                 "infarto", "iam", "sca", "sdst", "dolor toracico",
                 "dolor de pecho", "dolor precordial", "ataque al corazon"
             ),
-            "convulsion" to listOf(
+            ID_CONVULSION to listOf(
                 "convulsion", "status convulsivo", "crisis convulsiva", "epilepsia",
                 "crisis epiléptica", "convulsionando", "estatos convulsivo", "ataque epilepsia",
                 "ataque convulsivo"
