@@ -1,0 +1,18 @@
+{
+    "id" : "1",
+    "rut" : "12.345.678-4",
+    "nombre" : "Luis Alberto Jara Cantillana",
+    "alergias ambientales": [
+        "polen"
+    ],
+    "alergias alimentarias": [
+        "huevo"
+    ],
+    "alergias a los insectos": [
+
+    ],
+    "alergias cutáneas": [
+        "látex"
+    ],
+    "estado_mental" : "Sano"
+}

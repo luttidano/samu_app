@@ -1,0 +1,501 @@
+{
+  "id": "protocolo_convulsion_001",
+  "nombre": "Convulsión / Status Convulsivo",
+  "tags_busqueda": [
+    "convulsion",
+    "status convulsivo",
+    "crisis convulsiva",
+    "epilepsia"
+  ],
+  "nodo_inicial": "nodo_abcde",
+  "preparacion_salida": {
+    "insumos_generales": [
+      {
+        "id": "ins_vvp",
+        "nombre": "Elementos para Vía Venosa Periférica + Suero Fisiológico"
+      },
+      {
+        "id": "ins_oxigeno",
+        "nombre": "Oxigenoterapia para Sat O2 > 92% (Mascarilla de no recirculación)"
+      },
+      {
+        "id": "ins_hgt",
+        "nombre": "Glucómetro (HGT) y lancetas"
+      },
+      {
+        "id": "ins_monitor",
+        "nombre": "Monitor multiparámetro (ECG continuo, PANI, SpO2) para CSV"
+      },
+      {
+        "id": "ins_via_aerea",
+        "nombre": "Equipo de aspiración, cánulas Mayo y bolsa mascarilla (BVM)"
+      },
+      {
+        "id": "ins_tot",
+        "nombre": "Equipo para TOT con Secuencia Rápida de Intubación (SRI)"
+      },
+      {
+        "id": "ins_bic",
+        "nombre": "Bomba de Infusión Continua (BIC) + bajada"
+      }
+    ],
+    "medicamentos": [
+      {
+        "nodo_id": "nodo_droga_lorazepam",
+        "condicion": "1° Opción BZD (1ª Línea)"
+      },
+      {
+        "nodo_id": "nodo_droga_diazepam",
+        "condicion": "2° Opción BZD (1ª Línea)"
+      },
+      {
+        "nodo_id": "nodo_droga_midazolam",
+        "condicion": "3° Opción BZD (1ª Línea)"
+      },
+      {
+        "nodo_id": "nodo_droga_glucosa",
+        "condicion": "Si Glicemia < 70 mg/dL"
+      },
+      {
+        "nodo_id": "nodo_droga_fenobarbital",
+        "condicion": "1° Opción (2ª Línea)"
+      },
+      {
+        "nodo_id": "nodo_droga_fenitoina",
+        "condicion": "2° Opción (2ª Línea)"
+      },
+      {
+        "nodo_id": "nodo_refractario",
+        "condicion": "Status Refractario (BIC)"
+      }
+    ]
+  },
+  "diagrama": {
+    "width": 940,
+    "height": 1350,
+    "elementos": [
+      {
+        "id": "header_titulo",
+        "tipo": "titulo",
+        "x": 170,
+        "y": 15,
+        "width": 600,
+        "height": 45,
+        "texto": "CONVULSION / STATUS CONVULSIVO",
+        "font_size": 17
+      },
+      {
+        "id": "nodo_abcde",
+        "tipo": "amarillo",
+        "x": 350,
+        "y": 75,
+        "width": 240,
+        "height": 50,
+        "nodo_id": "nodo_abcde",
+        "texto": "A B C D E",
+        "font_size": 24
+      },
+      {
+        "id": "nodo_eval_inmediata",
+        "tipo": "azul",
+        "x": 365,
+        "y": 145,
+        "width": 210,
+        "height": 60,
+        "nodo_id": "nodo_evaluacion_inmediata",
+        "texto": "▪ Control de la crisis\n▪ Control de HGT",
+        "font_size": 13.5
+      },
+      {
+        "id": "nodo_manejo_inicial",
+        "tipo": "azul",
+        "x": 70,
+        "y": 225,
+        "width": 800,
+        "height": 175,
+        "nodo_id": "nodo_manejo_inicial",
+        "texto": "▪ Vía Venosa con Suero Fisiológico\n▪ Oxígeno para Sat O2 > 92%\n▪ Si Glicemia < 70 mg/ dl = Administrar Glucosa 30% (Dosis = 0,25 – 0,35 Gr/ Kg)\nControl de la crisis:\n▪ 1° Opción= Lorazepam 2 a 4 mg EV o IM con un máximo de 0,1 mg / Kg\n▪ 2° Opción= Diazepam de 5 a 10 mg EV o IM con un máximo de 20 Mg EV\n▪ 3° Opción= Midazolam de 0,1 mg/ Kg EV, IM o Intranasal\n▪ Proteger de lesiones y reevaluar respuesta al tratamiento farmacológico a los 5 min.",
+        "font_size": 13
+      },
+      {
+        "id": "nota_moviles_m1",
+        "tipo": "amarillo",
+        "x": 10,
+        "y": 430,
+        "width": 200,
+        "height": 90,
+        "texto": "Móviles M1: Solo administración IM o intranasal, según indicación Prof. CR",
+        "font_size": 12.5
+      },
+      {
+        "id": "pregunta_cede_1",
+        "tipo": "azul",
+        "x": 345,
+        "y": 430,
+        "width": 250,
+        "height": 45,
+        "nodo_id": "pregunta_cede_1",
+        "texto": "¿La Convulsión Cede?",
+        "font_size": 15
+      },
+      {
+        "id": "opcion_si_1",
+        "tipo": "opcion",
+        "x": 320,
+        "y": 500,
+        "width": 65,
+        "height": 40,
+        "texto": "SI",
+        "font_size": 14
+      },
+      {
+        "id": "opcion_no_1",
+        "tipo": "opcion",
+        "x": 560,
+        "y": 500,
+        "width": 65,
+        "height": 40,
+        "texto": "NO",
+        "font_size": 14
+      },
+      {
+        "id": "nodo_post_crisis",
+        "tipo": "azul",
+        "x": 50,
+        "y": 570,
+        "width": 330,
+        "height": 130,
+        "nodo_id": "nodo_post_crisis",
+        "texto": "▪ Monitorización y CSV\n▪ Recopilar antecedentes mórbidos en busca de causa.\n▪ Reporte a CR\n▪ Traslado en posición lateralizada (Pcte. sin trauma)",
+        "font_size": 13
+      },
+      {
+        "id": "nodo_repetir_bzd",
+        "tipo": "azul",
+        "x": 450,
+        "y": 570,
+        "width": 300,
+        "height": 70,
+        "nodo_id": "nodo_repetir_bzd",
+        "texto": "Repetir dosis de Benzodiacepina, igual vía de administración inicial",
+        "font_size": 13
+      },
+      {
+        "id": "pregunta_cede_2",
+        "tipo": "azul",
+        "x": 475,
+        "y": 665,
+        "width": 250,
+        "height": 45,
+        "nodo_id": "pregunta_cede_2",
+        "texto": "¿La Convulsión Cede?",
+        "font_size": 15
+      },
+      {
+        "id": "opcion_si_2",
+        "tipo": "opcion",
+        "x": 470,
+        "y": 730,
+        "width": 65,
+        "height": 40,
+        "texto": "SI",
+        "font_size": 14
+      },
+      {
+        "id": "opcion_no_2",
+        "tipo": "opcion",
+        "x": 640,
+        "y": 730,
+        "width": 65,
+        "height": 40,
+        "texto": "NO",
+        "font_size": 14
+      },
+      {
+        "id": "nodo_segunda_linea",
+        "tipo": "azul",
+        "x": 440,
+        "y": 795,
+        "width": 460,
+        "height": 85,
+        "nodo_id": "nodo_segunda_linea",
+        "texto": "1° Fenobarbital 20 Mg/ Kg EV en 20 min (Velocidad infusión 60 Mg / Min)\n2° Fenitoína 15 a 20 mg / Kg EV pasar en 20 min (Velocidad infusión 50 mg/ min)",
+        "font_size": 12.5
+      },
+      {
+        "id": "tag_cede",
+        "tipo": "celeste",
+        "x": 335,
+        "y": 840,
+        "width": 80,
+        "height": 35,
+        "texto": "CEDE",
+        "font_size": 13
+      },
+      {
+        "id": "tag_no_cede",
+        "tipo": "celeste",
+        "x": 580,
+        "y": 905,
+        "width": 150,
+        "height": 35,
+        "texto": "NO CEDE",
+        "font_size": 13
+      },
+      {
+        "id": "nodo_refractario",
+        "tipo": "azul",
+        "x": 40,
+        "y": 920,
+        "width": 480,
+        "height": 135,
+        "nodo_id": "nodo_refractario",
+        "texto": "▪ Considere TOT con SIR, según patologías concomitantes y hemodinamia.\n▪ Evaluar necesidad de iniciar infusión continua con BIC de Midazolam 0,1 a 0,4 mg / Kg / Hrs. (Debe existir una dosis previa de impregnación DE 0,2 MG/Kg en bolo)\n▪ Reporte a CR y traslado a UEH",
+        "font_size": 12.5
+      }
+    ],
+    "conexiones": [
+      { "desde": "header_titulo", "hasta": "nodo_abcde" },
+      { "desde": "nodo_abcde", "hasta": "nodo_eval_inmediata" },
+      { "desde": "nodo_eval_inmediata", "hasta": "nodo_manejo_inicial" },
+      { "desde": "nodo_manejo_inicial", "hasta": "pregunta_cede_1" },
+      { "desde": "pregunta_cede_1", "hasta": "opcion_si_1" },
+      { "desde": "pregunta_cede_1", "hasta": "opcion_no_1" },
+      { "desde": "opcion_si_1", "hasta": "nodo_post_crisis" },
+      { "desde": "opcion_no_1", "hasta": "nodo_repetir_bzd" },
+      { "desde": "nodo_repetir_bzd", "hasta": "pregunta_cede_2" },
+      { "desde": "pregunta_cede_2", "hasta": "opcion_si_2" },
+      { "desde": "pregunta_cede_2", "hasta": "opcion_no_2" },
+      {
+        "desde": "opcion_si_2",
+        "hasta": "nodo_post_crisis",
+        "salida": "izquierda",
+        "entrada": "derecha"
+      },
+      { "desde": "opcion_no_2", "hasta": "nodo_segunda_linea" },
+      {
+        "desde": "nodo_segunda_linea",
+        "hasta": "tag_cede",
+        "salida": "izquierda",
+        "entrada": "derecha"
+      },
+      {
+        "desde": "tag_cede",
+        "hasta": "nodo_post_crisis",
+        "salida": "arriba",
+        "entrada": "abajo"
+      },
+      { "desde": "nodo_segunda_linea", "hasta": "tag_no_cede" },
+      {
+        "desde": "tag_no_cede",
+        "hasta": "nodo_refractario",
+        "salida": "izquierda",
+        "entrada": "derecha"
+      }
+    ]
+  },
+  "nodos": {
+    "nodo_abcde": {
+      "id": "nodo_abcde",
+      "tipo": "procedimiento",
+      "texto": "A B C D E\n▪ A: Permeabilidad vía aérea. Aspirar secreciones si requiere. NO forzar apertura bucal con objetos.\n▪ B: Oxigenoterapia para Sat O2 > 92% (Mascarilla con reservorio de no recirculación).\n▪ C: Control de pulso, ritmo, presión arterial e instalación de VVP con Suero Fisiológico.\n▪ D: Nivel de consciencia, pupilas y características/duración de la convulsión.\n▪ E: Exposición y control de temperatura corporal. Proteger de lesiones sin sujetar a la fuerza.",
+      "siguiente_nodo": "nodo_evaluacion_inmediata"
+    },
+    "nodo_evaluacion_inmediata": {
+      "id": "nodo_evaluacion_inmediata",
+      "tipo": "procedimiento",
+      "texto": "Evaluación Inmediata:\n▪ Control de la crisis\n▪ Control de HGT",
+      "siguiente_nodo": "nodo_manejo_inicial"
+    },
+    "nodo_manejo_inicial": {
+      "id": "nodo_manejo_inicial",
+      "tipo": "procedimiento",
+      "texto": "Manejo Inicial y Farmacológico:\n▪ Vía Venosa con Suero Fisiológico\n▪ Oxígeno para Sat O2 > 92%\n▪ Si Glicemia < 70 mg/dl = Administrar Glucosa 30% (Dosis = 0,25 – 0,35 Gr/Kg)\n\nControl de la crisis (1ª Línea de Benzodiacepinas):\n▪ 1° Opción = Lorazepam 2 a 4 mg EV o IM con un máximo de 0,1 mg/Kg\n▪ 2° Opción = Diazepam de 5 a 10 mg EV o IM con un máximo de 20 Mg EV\n▪ 3° Opción = Midazolam de 0,1 mg/Kg EV, IM o Intranasal\n▪ Proteger de lesiones y reevaluar respuesta al tratamiento farmacológico a los 5 min.",
+      "instruccion_extra": "Nota Móviles M1: Solo administración IM o intranasal, según indicación Prof. CR",
+      "siguiente_nodo": "nodo_seleccion_farmaco_1"
+    },
+    "nodo_seleccion_farmaco_1": {
+      "id": "nodo_seleccion_farmaco_1",
+      "tipo": "pregunta",
+      "texto": "Seleccione el fármaco de 1ª línea que va a administrar para calcular la dosis según peso del paciente (o continúe si ya lo administró):",
+      "opciones": [
+        {
+          "texto": "1° Lorazepam (máx 0.1 mg/kg)",
+          "siguiente_nodo": "nodo_droga_lorazepam"
+        },
+        {
+          "texto": "2° Diazepam (5 a 10 mg EV/IM)",
+          "siguiente_nodo": "nodo_droga_diazepam"
+        },
+        {
+          "texto": "3° Midazolam (0.1 mg/kg EV/IM/IN)",
+          "siguiente_nodo": "nodo_droga_midazolam"
+        },
+        {
+          "texto": "Glucosa 30% (si glicemia < 70 mg/dL)",
+          "siguiente_nodo": "nodo_droga_glucosa"
+        },
+        {
+          "texto": "Ya administrado -> Evaluar si cede",
+          "siguiente_nodo": "pregunta_cede_1"
+        }
+      ]
+    },
+    "nodo_droga_lorazepam": {
+      "id": "nodo_droga_lorazepam",
+      "tipo": "droga",
+      "texto": "Lorazepam 1ª Opción BZD:\n2 a 4 mg EV o IM con un máximo de 0,1 mg / Kg",
+      "nombre_droga": "Lorazepam",
+      "dosis_formula": "0.1",
+      "unidad": "mg/kg",
+      "via": "EV o IM",
+      "presentacion": "Ampolla 4 mg / 2 mL",
+      "instruccion_extra": "Dosis 2 a 4 mg (máximo 0,1 mg/kg). Administrar lento en 2 minutos.",
+      "siguiente_nodo": "pregunta_cede_1"
+    },
+    "nodo_droga_diazepam": {
+      "id": "nodo_droga_diazepam",
+      "tipo": "droga",
+      "texto": "Diazepam 2ª Opción BZD:\n5 a 10 mg EV o IM con un máximo de 20 mg EV",
+      "nombre_droga": "Diazepam",
+      "dosis_formula": "5 - 10",
+      "unidad": "mg",
+      "via": "EV o IM",
+      "presentacion": "Ampolla 10 mg / 2 mL",
+      "instruccion_extra": "Dosis de 5 a 10 mg EV/IM. Máximo 20 mg EV. Administrar a 2 a 5 mg/min.",
+      "siguiente_nodo": "pregunta_cede_1"
+    },
+    "nodo_droga_midazolam": {
+      "id": "nodo_droga_midazolam",
+      "tipo": "droga",
+      "texto": "Midazolam 3ª Opción BZD:\n0,1 mg/ Kg EV, IM o Intranasal",
+      "nombre_droga": "Midazolam",
+      "dosis_formula": "0.1",
+      "unidad": "mg/kg",
+      "via": "EV, IM o Intranasal",
+      "presentacion": "Ampolla 5 mg / 5 mL o 15 mg / 3 mL",
+      "instruccion_extra": "De elección en Móviles M1 (vía IM o Intranasal). Reevaluar a los 5 minutos.",
+      "siguiente_nodo": "pregunta_cede_1"
+    },
+    "nodo_droga_glucosa": {
+      "id": "nodo_droga_glucosa",
+      "tipo": "droga",
+      "texto": "Glucosa 30% EV en bolo:\nAdministrar solo si Glicemia < 70 mg/dl (0,25 – 0,35 Gr/ Kg)",
+      "nombre_droga": "Glucosa 30%",
+      "dosis_formula": "0.25 - 0.35",
+      "unidad": "g/kg",
+      "via": "EV",
+      "presentacion": "Ampolla 30% (20 mL = 6 g)",
+      "instruccion_extra": "Administrar por vía venosa permeable en bolo lento. Reevaluar HGT.",
+      "siguiente_nodo": "nodo_seleccion_farmaco_1"
+    },
+    "pregunta_cede_1": {
+      "id": "pregunta_cede_1",
+      "tipo": "pregunta",
+      "texto": "¿La Convulsión Cede?",
+      "opciones": [
+        {
+          "texto": "SI",
+          "siguiente_nodo": "nodo_post_crisis"
+        },
+        {
+          "texto": "NO",
+          "siguiente_nodo": "nodo_repetir_bzd"
+        }
+      ]
+    },
+    "nodo_repetir_bzd": {
+      "id": "nodo_repetir_bzd",
+      "tipo": "procedimiento",
+      "texto": "Segunda Dosis de Benzodiacepina:\n▪ Repetir dosis de Benzodiacepina, igual vía de administración inicial.",
+      "instruccion_extra": "Precaución: Vigilar permeabilidad de vía aérea y patrón ventilatorio por riesgo de depresión respiratoria.",
+      "siguiente_nodo": "pregunta_cede_2"
+    },
+    "pregunta_cede_2": {
+      "id": "pregunta_cede_2",
+      "tipo": "pregunta",
+      "texto": "¿La Convulsión Cede? (Segunda evaluación)",
+      "opciones": [
+        {
+          "texto": "SI",
+          "siguiente_nodo": "nodo_post_crisis"
+        },
+        {
+          "texto": "NO",
+          "siguiente_nodo": "nodo_segunda_linea"
+        }
+      ]
+    },
+    "nodo_segunda_linea": {
+      "id": "nodo_segunda_linea",
+      "tipo": "pregunta",
+      "texto": "Fármacos de Segunda Línea:\nSeleccione el anticonvulsivante a infundir para ver su cálculo de dosis:",
+      "opciones": [
+        {
+          "texto": "1° Fenobarbital 20 Mg/Kg EV en 20 min",
+          "siguiente_nodo": "nodo_droga_fenobarbital"
+        },
+        {
+          "texto": "2° Fenitoína 15 a 20 mg/Kg EV en 20 min",
+          "siguiente_nodo": "nodo_droga_fenitoina"
+        }
+      ]
+    },
+    "nodo_droga_fenobarbital": {
+      "id": "nodo_droga_fenobarbital",
+      "tipo": "droga",
+      "texto": "1° Fenobarbital:\n20 Mg/ Kg EV en 20 min (Velocidad infusión 60 Mg / Min)",
+      "nombre_droga": "Fenobarbital",
+      "dosis_formula": "20",
+      "unidad": "mg/kg",
+      "via": "EV",
+      "presentacion": "Ampolla 200 mg / 1 mL",
+      "instruccion_extra": "Pasar en 20 minutos (velocidad de infusión 60 mg/min). Monitoreo continuo.",
+      "siguiente_nodo": "pregunta_post_segunda_linea"
+    },
+    "nodo_droga_fenitoina": {
+      "id": "nodo_droga_fenitoina",
+      "tipo": "droga",
+      "texto": "2° Fenitoína:\n15 a 20 mg / Kg EV pasar en 20 min (Velocidad infusión 50 mg/ min)",
+      "nombre_droga": "Fenitoína",
+      "dosis_formula": "15 - 20",
+      "unidad": "mg/kg",
+      "via": "EV",
+      "presentacion": "Ampolla 250 mg / 5 mL",
+      "instruccion_extra": "Diluir solo en Suero Fisiológico 0.9%. Velocidad infusión 50 mg/min. Monitorizar ECG por riesgo de arritmias.",
+      "siguiente_nodo": "pregunta_post_segunda_linea"
+    },
+    "pregunta_post_segunda_linea": {
+      "id": "pregunta_post_segunda_linea",
+      "tipo": "pregunta",
+      "texto": "Resultado post Segunda Línea: ¿La convulsión cede?",
+      "opciones": [
+        {
+          "texto": "CEDE",
+          "siguiente_nodo": "nodo_post_crisis"
+        },
+        {
+          "texto": "NO CEDE",
+          "siguiente_nodo": "nodo_refractario"
+        }
+      ]
+    },
+    "nodo_refractario": {
+      "id": "nodo_refractario",
+      "tipo": "droga",
+      "texto": "Manejo Avanzado y Traslado Rápido:\n▪ Considere TOT con SIR, según patologías concomitantes y hemodinamia.\n▪ Evaluar necesidad de iniciar infusión continua con BIC de Midazolam 0,1 a 0,4 mg / Kg / Hrs. (Debe existir una dosis previa de impregnación DE 0,2 MG/Kg en bolo).\n▪ Reporte a CR y traslado a UEH.",
+      "nombre_droga": "Midazolam Infusión BIC",
+      "dosis_formula": "0.1 - 0.4",
+      "unidad": "mg/kg/hora",
+      "via": "BIC",
+      "presentacion": "Ampolla 15 mg / 3 mL o 50 mg / 10 mL",
+      "instruccion_extra": "Dosis de impregnación previa de 0,2 mg/kg en bolo EV. Programar infusión en BIC.",
+      "siguiente_nodo": "nodo_post_crisis"
+    },
+    "nodo_post_crisis": {
+      "id": "nodo_post_crisis",
+      "tipo": "procedimiento",
+      "texto": "Cuidados Post-Crisis y Traslado:\n▪ Monitorización y CSV\n▪ Recopilar antecedentes mórbidos en busca de causa.\n▪ Reporte a CR\n▪ Traslado en posición lateralizada (Pcte. sin trauma)"
+    }
+  }
+}

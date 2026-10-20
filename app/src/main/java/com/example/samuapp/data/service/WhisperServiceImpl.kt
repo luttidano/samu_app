@@ -21,6 +21,7 @@ class WhisperServiceImpl(
             "Atencion prehospitalaria SAMU urgencias: " +
             "Paciente con hipoglicemia, hiperglicemia, edema agudo de pulmón (EPA)" +
             "síndrome coronario agudo, infarto agudo al miocardio (IAM), disnea" +
+            "convulsión, status convulsivo, crisis convulsiva, epilepsia " +
             " paro cardiorrespiratorio. Signos vitales, peso en kilos, sexo masculino o femenino"
     }
 

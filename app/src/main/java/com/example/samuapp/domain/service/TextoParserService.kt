@@ -24,6 +24,11 @@ class TextoParserService {
                 "sindrome coronario", "sindrome coronario agudo", "coronario agudo",
                 "infarto", "iam", "sca", "sdst", "dolor toracico",
                 "dolor de pecho", "dolor precordial", "ataque al corazon"
+            ),
+            "convulsion" to listOf(
+                "convulsion", "status convulsivo", "crisis convulsiva", "epilepsia",
+                "crisis epiléptica", "convulsionando", "estatos convulsivo", "ataque epilepsia",
+                "ataque convulsivo"
             )
         )
     }

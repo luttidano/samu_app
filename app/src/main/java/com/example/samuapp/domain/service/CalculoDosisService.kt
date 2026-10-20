@@ -145,6 +145,10 @@ class CalculoDosisService {
         if (nom.contains("morfina") || pres.contains("1%")) return 10.0
         if (nom.contains("furosemida")) return 10.0
         if (nom.contains("fentanilo")) return 50.0
+        if (nom.contains("diazepam")) return 5.0 // 10 mg / 2mL
+        if (nom.contains("lorazepam")) return 2.0 // 4 mg 7 2 mL
+        if (nom.contains("fenitoina") || nom.contains("fenitoína")) return 50.0 // 250 mg / 5 mL
+        if (nom.contains("fenobarbital")) return 200.0 // 200 mg / 1 ml = 200 mg /mL
 
         val matchFraccion = Regex("""(\d+(?:[.,]\d+)?)\s*(?:mg|g|gr)\s*/\s*(\d+(?:[.,]\d+)?)?\s*ml""").find(pres)
         if (matchFraccion != null) {
@@ -191,6 +195,26 @@ class CalculoDosisService {
         if (nombre.contains("fentanilo")) {
             val ampollas = ceil(volumenMaxMl / 2.0).toInt().coerceAtLeast(1)
             return InfoEmpaque(ampollas, "ampollas", "Llevar mínimo $ampollas ampolla de Fentanilo (100 ug / 2 mL)")
+        }
+        if (nombre.contains("diazepam")) {
+            val ampollas = ceil(dosisMax / 10.0).toInt().coerceAtLeast(1)
+            return InfoEmpaque(ampollas, "ampollas", "Llevar mínimo $ampollas ampolla(s) de Diazepam (10 mg / 2 mL)")
+        }
+        if (nombre.contains("lorazepam")) {
+            val ampollas = ceil(dosisMax / 4.0).toInt().coerceAtLeast(1)
+            return InfoEmpaque(ampollas, "ampollas", "Llevar mínimo $ampollas ampolla(s) de Lorazepam (4 mg / 2 mL)")
+        }
+        if (nombre.contains("midazolam")) {
+            val ampollas = ceil(dosisMax / 5.0).toInt().coerceAtLeast(1)
+            return InfoEmpaque(ampollas, "ampollas", "Llevar mínimo $ampollas ampolla(s) de Midazolam")
+        }
+        if (nombre.contains("fenitoina") || nombre.contains("fenitoína")) {
+            val ampollas = ceil(dosisMax / 250.0).toInt().coerceAtLeast(1)
+            return InfoEmpaque(ampollas, "ampollas", "Llevar mínimo $ampollas ampolla(s) de Fenitoína (250 mg / 5 mL) + Suero Fisiológico")
+        }
+        if (nombre.contains("fenobarbital")) {
+            val ampollas = ceil(dosisMax / 200.0).toInt().coerceAtLeast(1)
+            return InfoEmpaque(ampollas, "ampollas", "Llevar mínimo $ampollas ampolla(s) de Fenobarbital (200 mg / 1 mL)")
         }
 
         if (esInfusion) {

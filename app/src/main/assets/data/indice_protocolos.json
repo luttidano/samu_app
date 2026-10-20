@@ -53,6 +53,17 @@
             "iam",
             "sdst"
         ]
+    },
+    {
+        "id": "protocolo_convulsion_001",
+        "nombre": "Convulsión / Status convulsivo",
+        "archivo": "assets/data/proto_convulsion.json",
+        "tags_busqueda": [
+            "convulsion",
+            "crisis convulsiva",
+            "status convulsivo",
+            "epilepsia"
+        ]
     }
         
 ]

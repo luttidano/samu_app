@@ -29,12 +29,22 @@ fun ConfirmacionDatosDialog(
     onDismiss: () -> Unit,
     onConfirmar: (DatosPaciente) -> Unit
 ) {
-    var urgenciaSeleccionada by rememberSaveable { mutableStateOf(datosIniciales.urgencia ?: "") }
+    var protocoloInicial = remember(datosIniciales.urgencia, opcionesProtocolos) {
+        val query = (datosIniciales.urgencia ?: "").trim().lowercase()
+        if (query.isEmpty()) null
+        else opcionesProtocolos.find { p ->
+            p.id.lowercase() == query ||
+                p.nombre.lowercase() == query ||
+                p.nombre.lowercase().contains(query) ||
+                p.tagsBusqueda.any { it.lowercase() == query || it.lowercase().contains(query) }
+        }
+    }
+    
+    var urgenciaSeleccionada by rememberSaveable { 
+        mutableStateOf(protocoloInicial?.nombre ?: (datosIniciales.urgencia ?: "")) 
+    }
     var textoUrgencia by rememberSaveable {
-        val inicial = opcionesProtocolos.find {
-            it.id.equals(datosIniciales.urgencia, ignoreCase = true)
-        }?.nombre ?: (datosIniciales.urgencia ?: "")
-        mutableStateOf(inicial)
+        mutableStateOf(protocoloInicial?.nombre ?: (datosIniciales.urgencia ?: ""))
     }
 
     var sexoSeleccionado by rememberSaveable { mutableStateOf(datosIniciales.sexo ?: "masculino") }
