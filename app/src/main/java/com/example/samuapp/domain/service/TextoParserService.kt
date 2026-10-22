@@ -10,6 +10,7 @@ class TextoParserService {
         const val ID_EPA = "protocolo_edema_pulmon_agudo_001"
         const val ID_SCA = "protocolo_sindrome_coronario_001"
         const val ID_CONVULSION = "protocolo_convulsion_001"
+        const val ID_PCR_NT = "protocolo_pcr_no_traumatico_001"
         
         private val DICCIONARIO_URGENCIAS = mapOf(
             ID_HIPOGLICEMIA to listOf(
@@ -35,6 +36,10 @@ class TextoParserService {
                 "convulsion", "status convulsivo", "crisis convulsiva", "epilepsia",
                 "crisis epiléptica", "convulsionando", "estatos convulsivo", "ataque epilepsia",
                 "ataque convulsivo"
+            ),
+            ID_PCR_NT to listOf(
+             "paro", "paro cardiorespiratorio", "paro cardiorrespiratorio", "pcr",
+            "paro cardiaco", "en paro", "rcp", "asistolia", "fibrilacion ventricular","taquicardia ventricular", "sin pulso", "inconsciente sin pulso", "paro no traumatico" 
             )
         )
     }

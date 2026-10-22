@@ -1,0 +1,698 @@
+{
+  "id": "protocolo_pcr_no_traumatico_001",
+  "nombre": "Paro Cardiorrespiratorio No Traumático",
+  "tags_busqueda": [
+    "paro",
+    "pcr",
+    "paro cardiorespiratorio",
+    "paro cardiorrespiratorio",
+    "paro no traumatico",
+    "rcp",
+    "fibrilacion ventricular",
+    "taquicardia ventricular"
+  ],
+  "nodo_inicial": "nodo_evaluacion_inicial",
+  "alertas_generales": [
+    "Minimizar interrupciones en las compresiones torácicas (< 10 segundos).",
+    "Cambio de operador que comprime cada 2 minutos para evitar fatiga.",
+    "Si existe RCE (Retorno de Circulación Espontánea): Alerta inmediata a CR para coordinación con UEH."
+  ],
+  "preparacion_salida": {
+    "insumos_generales": [
+      {
+        "id": "ins_desfibrilador",
+        "nombre": "Monitor / Desfibrilador bifásico con parches o palas"
+      },
+      {
+        "id": "ins_bvm",
+        "nombre": "Bolsa de reanimación (BVM) con reservorio y fuente de O2 a 15 L/min"
+      },
+      {
+        "id": "ins_via_aerea",
+        "nombre": "Equipo de Vía Aérea Avanzada (Videolaringo/Laringo, TOT, Bougie, Capnógrafo)"
+      },
+      {
+        "id": "ins_acceso_vascular",
+        "nombre": "Vía Venosa Periférica (Bránulas 18G/16G) y/o Dispositivo Intraóseo (IO)"
+      },
+      {
+        "id": "ins_compresor",
+        "nombre": "Compresor torácico mecánico automático (según disponibilidad)"
+      },
+      {
+        "id": "ins_tabla",
+        "nombre": "Tabla rígida de paro / superficie firme"
+      }
+    ],
+    "medicamentos": [
+      {
+        "nodo_id": "nodo_droga_adrenalina",
+        "condicion": "1 mg cada 3-5 minutos"
+      },
+      {
+        "nodo_id": "nodo_droga_amiodarona",
+        "condicion": "1° Opción Antiarrítmico FV/TV (300 mg)"
+      },
+      {
+        "nodo_id": "nodo_droga_lidocaina",
+        "condicion": "2° Opción Antiarrítmico FV/TV (1 a 1.5 mg/kg)"
+      },
+      {
+        "nodo_id": "nodo_droga_sulfato_mg",
+        "condicion": "Torsión de punta / Hipomagnesemia"
+      },
+      {
+        "nodo_id": "nodo_droga_bicarbonato",
+        "condicion": "Hipercalemia / Acidosis / Tricíclicos"
+      }
+    ]
+  },
+  "diagrama": {
+    "width": 1050,
+    "height": 1450,
+    "elementos": [
+      {
+        "id": "header_titulo",
+        "tipo": "titulo",
+        "x": 200,
+        "y": 15,
+        "width": 650,
+        "height": 50,
+        "texto": "MANEJO PARO CARDIORESPIRATORIO NO TRAUMATICO",
+        "font_size": 17
+      },
+      {
+        "id": "caja_evaluacion_inicial",
+        "tipo": "amarillo",
+        "x": 100,
+        "y": 80,
+        "width": 850,
+        "height": 95,
+        "nodo_id": "nodo_evaluacion_inicial",
+        "texto": "1. Verificar capacidad de respuesta del paciente\n2. Evaluar presencia de pulso carotideo y ventilación espontánea en 5 a 10 seg.\nANTE AUSENCIA DE PULSO Y VENTILACIÓN INICIAR RCP DE ALTA CALIDAD",
+        "font_size": 13.5
+      },
+      {
+        "id": "caja_rcp_inicial",
+        "tipo": "azul",
+        "x": 235,
+        "y": 195,
+        "width": 580,
+        "height": 115,
+        "nodo_id": "nodo_rcp_inicial",
+        "texto": "▪ RCP por 2 minutos:\n  - Compresión torácica de alta calidad 30:2\n  - Ventilación con bolsa a presión (+) FiO2 15 Lts.\n▪ Conectar monitor/desfibrilador",
+        "font_size": 13.5
+      },
+      {
+        "id": "nota_retroalimentacion",
+        "tipo": "amarillo",
+        "x": 820,
+        "y": 195,
+        "width": 210,
+        "height": 120,
+        "texto": "Se sugiere uso de retroalimentación audiovisual en tiempo real como medio para mantener calidad de RCP",
+        "font_size": 12
+      },
+      {
+        "id": "caja_identificar_ritmo",
+        "tipo": "azul",
+        "x": 375,
+        "y": 330,
+        "width": 300,
+        "height": 45,
+        "nodo_id": "pregunta_identificar_ritmo",
+        "texto": "IDENTIFICAR RITMO",
+        "font_size": 15
+      },
+      {
+        "id": "caja_fv_tv",
+        "tipo": "amarillo",
+        "x": 90,
+        "y": 395,
+        "width": 280,
+        "height": 45,
+        "texto": "FV / TV sin pulso",
+        "font_size": 15
+      },
+      {
+        "id": "caja_asistolia_aesp",
+        "tipo": "amarillo",
+        "x": 635,
+        "y": 395,
+        "width": 280,
+        "height": 45,
+        "texto": "ASISTOLIA / AESP",
+        "font_size": 15
+      },
+      {
+        "id": "descarga_1",
+        "tipo": "celeste",
+        "x": 110,
+        "y": 455,
+        "width": 240,
+        "height": 35,
+        "texto": "⚡ Descarga 120 – 200 J",
+        "font_size": 13.5
+      },
+      {
+        "id": "caja_post_descarga_1",
+        "tipo": "azul",
+        "x": 90,
+        "y": 505,
+        "width": 280,
+        "height": 60,
+        "nodo_id": "nodo_rcp_post_descarga_1",
+        "texto": "RCP 2 min\n- Acceso IV/IO",
+        "font_size": 14
+      },
+      {
+        "id": "caja_asistolia_adrenalina",
+        "tipo": "azul",
+        "x": 555,
+        "y": 520,
+        "width": 440,
+        "height": 165,
+        "nodo_id": "nodo_asistolia_manejo",
+        "texto": "- RCP 2 min y reevaluar\n- Acceso IV/IO\n- Adrenalina 1 mg EV cada 3 – 5 min\n- Considerar manejo avanzado vía aérea y capnografía con ventilación cada 6 seg.",
+        "font_size": 13
+      },
+      {
+        "id": "preg_desfib_l1",
+        "tipo": "salmon",
+        "x": 75,
+        "y": 580,
+        "width": 290,
+        "height": 45,
+        "nodo_id": "pregunta_desfibrilable_l1",
+        "texto": "¿Ritmo Desfibrilable?",
+        "font_size": 14.5
+      },
+      {
+        "id": "opc_no_l1",
+        "tipo": "opcion",
+        "x": 405,
+        "y": 580,
+        "width": 65,
+        "height": 40,
+        "texto": "NO",
+        "font_size": 14
+      },
+      {
+        "id": "opc_si_l1",
+        "tipo": "opcion",
+        "x": 187,
+        "y": 650,
+        "width": 65,
+        "height": 40,
+        "texto": "SI",
+        "font_size": 14
+      },
+      {
+        "id": "descarga_2",
+        "tipo": "celeste",
+        "x": 80,
+        "y": 710,
+        "width": 280,
+        "height": 45,
+        "texto": "⚡ Descarga 120 - 200 J\n(Nunca inferior a la anterior)",
+        "font_size": 12.5
+      },
+      {
+        "id": "preg_desfib_r1",
+        "tipo": "salmon",
+        "x": 630,
+        "y": 710,
+        "width": 270,
+        "height": 45,
+        "nodo_id": "pregunta_desfibrilable_r1",
+        "texto": "¿Ritmo Desfibrilable?",
+        "font_size": 14.5
+      },
+      {
+        "id": "opc_si_r1",
+        "tipo": "opcion",
+        "x": 515,
+        "y": 712.5,
+        "width": 65,
+        "height": 40,
+        "texto": "SI",
+        "font_size": 14
+      },
+      {
+        "id": "opc_no_r1",
+        "tipo": "opcion",
+        "x": 732,
+        "y": 775,
+        "width": 65,
+        "height": 40,
+        "texto": "NO",
+        "font_size": 14
+      },
+      {
+        "id": "caja_adrenalina_l",
+        "tipo": "azul",
+        "x": 50,
+        "y": 780,
+        "width": 410,
+        "height": 115,
+        "nodo_id": "nodo_adrenalina_l",
+        "texto": "- RCP 2 min y reevaluar\n- Adrenalina 1 mg EV cada 3 – 5 min\n- Considerar manejo avanzado vía aérea y capnografía con ventilación cada 6 seg.",
+        "font_size": 13
+      },
+      {
+        "id": "caja_causas_reversibles",
+        "tipo": "azul",
+        "x": 605,
+        "y": 835,
+        "width": 320,
+        "height": 75,
+        "nodo_id": "nodo_tratar_causas_reversibles",
+        "texto": "RCP 2 min\n- Tratar causas reversibles (H y T)",
+        "font_size": 14
+      },
+      {
+        "id": "preg_desfib_l2",
+        "tipo": "salmon",
+        "x": 75,
+        "y": 940,
+        "width": 290,
+        "height": 45,
+        "nodo_id": "pregunta_desfibrilable_l2",
+        "texto": "¿Ritmo Desfibrilable?",
+        "font_size": 14.5
+      },
+      {
+        "id": "preg_desfib_r2",
+        "tipo": "salmon",
+        "x": 630,
+        "y": 940,
+        "width": 270,
+        "height": 45,
+        "nodo_id": "pregunta_desfibrilable_r2",
+        "texto": "¿Ritmo Desfibrilable?",
+        "font_size": 14.5
+      },
+      {
+        "id": "opc_no_l2",
+        "tipo": "opcion",
+        "x": 400,
+        "y": 950,
+        "width": 65,
+        "height": 40,
+        "texto": "NO",
+        "font_size": 14
+      },
+      {
+        "id": "opc_si_r2",
+        "tipo": "opcion",
+        "x": 515,
+        "y": 942.5,
+        "width": 65,
+        "height": 40,
+        "texto": "SI",
+        "font_size": 14
+      },
+      {
+        "id": "opc_no_r2",
+        "tipo": "opcion",
+        "x": 935,
+        "y": 942.5,
+        "width": 65,
+        "height": 40,
+        "texto": "NO",
+        "font_size": 14
+      },
+      {
+        "id": "opc_si_l2",
+        "tipo": "opcion",
+        "x": 187,
+        "y": 1005,
+        "width": 65,
+        "height": 40,
+        "texto": "SI",
+        "font_size": 14
+      },
+      {
+        "id": "descarga_3",
+        "tipo": "celeste",
+        "x": 80,
+        "y": 1060,
+        "width": 280,
+        "height": 45,
+        "texto": "⚡ Descarga 120 - 200 J\n(Nunca inferior a la anterior)",
+        "font_size": 12.5
+      },
+      {
+        "id": "caja_antiarritmicos",
+        "tipo": "azul",
+        "x": 50,
+        "y": 1125,
+        "width": 420,
+        "height": 215,
+        "nodo_id": "nodo_antiarritmicos",
+        "texto": "- RCP 2 min y reevaluar\n1° Amiodarona 300 mg EV\n  - De requerir 2ª dosis: 150 mg EV\n  o\n2° Lidocaína 1 a 1,5 mg/kg EV\n  - De requerir 2ª dosis: 0,5 a 0,75 mg/kg EV (priorizar en QT largo)\n- Sulfato de Mg 1 a 2 gr. EV / IO (en Torsión de puntas, Hipomagnesemia)",
+        "font_size": 12.5
+      },
+      {
+        "id": "caja_precauciones_globales",
+        "tipo": "amarillo",
+        "x": 550,
+        "y": 1800,
+        "width": 540,
+        "height": 280,
+        "texto": "✓ Si existe RCE reporte a CR para alerta a UEH y cuidados post paro\n✓ Utilizar compresor torácico automático si está disponible\n✓ Cambio de operador que comprime cada 2 min de RCP\n✓ En intoxicación por cocaína: Adrenalina cada 5 min\n✓ Buscar y tratar causas reversibles (H y T)\n✓ NO administrar amiodarona si hay alergia a Yodo, Hipertiroidismo o QT largo\n✓ Bicarbonato Na (Hipercalemia, Acidosis documentada, Tricíclicos): Vía aérea avanzada previa, NO mezclar con catecolaminas",
+        "font_size": 12.5
+      }
+    ],
+    "conexiones": [
+      { "desde": "header_titulo", "hasta": "caja_evaluacion_inicial" },
+      { "desde": "caja_evaluacion_inicial", "hasta": "caja_rcp_inicial" },
+      { "desde": "caja_rcp_inicial", "hasta": "caja_identificar_ritmo" },
+      { "desde": "caja_identificar_ritmo", "hasta": "caja_fv_tv" },
+      { "desde": "caja_identificar_ritmo", "hasta": "caja_asistolia_aesp" },
+      { "desde": "caja_fv_tv", "hasta": "descarga_1" },
+      { "desde": "descarga_1", "hasta": "caja_post_descarga_1" },
+      { "desde": "caja_post_descarga_1", "hasta": "preg_desfib_l1" },
+      { "desde": "preg_desfib_l1", "hasta": "opc_si_l1" },
+      {
+        "desde": "preg_desfib_l1",
+        "hasta": "opc_no_l1",
+        "salida": "derecha",
+        "entrada": "izquierda"
+      },
+      { "desde": "opc_si_l1", "hasta": "descarga_2" },
+      { "desde": "descarga_2", "hasta": "caja_adrenalina_l" },
+      { "desde": "caja_adrenalina_l", "hasta": "preg_desfib_l2" },
+      { "desde": "preg_desfib_l2", "hasta": "opc_si_l2" },
+      {
+        "desde": "preg_desfib_l2",
+        "hasta": "opc_no_l2",
+        "salida": "derecha",
+        "entrada": "izquierda"
+      },
+      { "desde": "opc_si_l2", "hasta": "descarga_3" },
+      { "desde": "descarga_3", "hasta": "caja_antiarritmicos" },
+      {
+        "desde": "opc_no_l1",
+        "hasta": "caja_asistolia_adrenalina",
+        "salida": "derecha",
+        "entrada": "izquierda"
+      },
+      {
+        "desde": "opc_no_l2",
+        "hasta": "opc_no_r2",
+        "salida": "abajo",
+        "entrada": "abajo"
+      },
+      { "desde": "caja_asistolia_aesp", "hasta": "caja_asistolia_adrenalina" },
+      { "desde": "caja_asistolia_adrenalina", "hasta": "preg_desfib_r1" },
+      {
+        "desde": "preg_desfib_r1",
+        "hasta": "opc_si_r1",
+        "salida": "izquierda",
+        "entrada": "derecha"
+      },
+      { "desde": "preg_desfib_r1", "hasta": "opc_no_r1" },
+      {
+        "desde": "opc_si_r1",
+        "hasta": "descarga_2",
+        "salida": "izquierda",
+        "entrada": "derecha"
+      },
+      { "desde": "opc_no_r1", "hasta": "caja_causas_reversibles" },
+      { "desde": "caja_causas_reversibles", "hasta": "preg_desfib_r2" },
+      {
+        "desde": "preg_desfib_r2",
+        "hasta": "opc_si_r2",
+        "salida": "izquierda",
+        "entrada": "derecha"
+      },
+      {
+        "desde": "preg_desfib_r2",
+        "hasta": "opc_no_r2",
+        "salida": "derecha",
+        "entrada": "izquierda"
+      },
+      {
+        "desde": "opc_si_r2",
+        "hasta": "descarga_2",
+        "salida": "izquierda",
+        "entrada": "derecha"
+      },
+      {
+        "desde": "opc_no_r2",
+        "hasta": "caja_asistolia_adrenalina",
+        "salida": "derecha",
+        "entrada": "derecha"
+      },
+      {
+        "desde": "caja_antiarritmicos",
+        "hasta": "preg_desfib_l1",
+        "salida": "izquierda",
+        "entrada": "izquierda"
+      }
+    ]
+  },
+  "nodos": {
+    "nodo_evaluacion_inicial": {
+      "id": "nodo_evaluacion_inicial",
+      "tipo": "procedimiento",
+      "texto": "Evaluación Inicial de Paro Cardiorrespiratorio:\n1. Verificar capacidad de respuesta del paciente.\n2. Evaluar presencia de pulso carotideo y ventilación espontánea en 5 a 10 segundos.\n\nANTE AUSENCIA DE PULSO Y VENTILACIÓN: INICIAR RCP DE ALTA CALIDAD DE INMEDIATO.",
+      "siguiente_nodo": "nodo_rcp_inicial"
+    },
+    "nodo_rcp_inicial": {
+      "id": "nodo_rcp_inicial",
+      "tipo": "procedimiento",
+      "texto": "RCP Inicial (Ciclo de 2 minutos):\n▪ Compresiones torácicas de alta calidad: Frecuencia 100-120 cpm, profundidad 5-6 cm, permitir reexpansión completa.\n▪ Relación 30 compresiones : 2 ventilaciones con bolsa mascarilla a presión positiva con FiO2 15 L/min.\n▪ Conectar de inmediato monitor/desfibrilador con parches o palas.",
+      "instruccion_extra": "Se sugiere uso de retroalimentación audiovisual en tiempo real como medio para mantener la calidad de la RCP.",
+      "siguiente_nodo": "pregunta_identificar_ritmo"
+    },
+    "pregunta_identificar_ritmo": {
+      "id": "pregunta_identificar_ritmo",
+      "tipo": "pregunta",
+      "texto": "Pausar brevemente compresiones (< 5 seg) e IDENTIFICAR RITMO en el monitor:",
+      "opciones": [
+        {
+          "texto": "⚡ Fibrilación Ventricular (FV) / TV sin pulso",
+          "siguiente_nodo": "nodo_descarga_1"
+        },
+        {
+          "texto": "Asistolia / AESP (Actividad Eléctrica Sin Pulso)",
+          "siguiente_nodo": "nodo_asistolia_manejo"
+        }
+      ]
+    },
+    "nodo_descarga_1": {
+      "id": "nodo_descarga_1",
+      "tipo": "alerta",
+      "texto": "⚡ 1ª DESCARGA (DESFIBRILACIÓN):\n▪ Cargar Desfibrilador: 120 a 200 Joules (según fabricante).\n▪ Despejar al paciente y administrar descarga.\n▪ REINICIAR RCP DE INMEDIATO tras el choque sin evaluar ritmo.",
+      "siguiente_nodo": "nodo_rcp_post_descarga_1"
+    },
+    "nodo_rcp_post_descarga_1": {
+      "id": "nodo_rcp_post_descarga_1",
+      "tipo": "procedimiento",
+      "texto": "RCP 2 minutos post 1ª descarga:\n▪ Realizar compresiones continuas de alta calidad.\n▪ Instalar acceso vascular: Vía Venosa Periférica (VVP) de grueso calibre o Acceso Intraóseo (IO).",
+      "siguiente_nodo": "pregunta_desfibrilable_l1"
+    },
+    "pregunta_desfibrilable_l1": {
+      "id": "pregunta_desfibrilable_l1",
+      "tipo": "pregunta",
+      "texto": "¿El ritmo continúa siendo Desfibrilable (FV / TVSP)?",
+      "opciones": [
+        {
+          "texto": "SI (Continúa en FV/TV)",
+          "siguiente_nodo": "nodo_descarga_2"
+        },
+        {
+          "texto": "NO (Cambió a Asistolia / AESP)",
+          "siguiente_nodo": "nodo_asistolia_manejo"
+        },
+        {
+          "texto": "Retorno de Circulación Espontánea (RCE)",
+          "siguiente_nodo": "nodo_cuidados_post_paro"
+        }
+      ]
+    },
+    "nodo_descarga_2": {
+      "id": "nodo_descarga_2",
+      "tipo": "alerta",
+      "texto": "⚡ 2ª DESCARGA (DESFIBRILACIÓN):\n▪ Descarga 120 - 200 J (nunca inferior a la dosis previa).\n▪ Reiniciar RCP de alta calidad de inmediato.",
+      "siguiente_nodo": "nodo_adrenalina_l"
+    },
+    "nodo_adrenalina_l": {
+      "id": "nodo_adrenalina_l",
+      "tipo": "droga",
+      "texto": "Administración de Adrenalina:\n▪ Adrenalina 1 mg EV/IO en bolo rápido + 20 mL de SF para lavado.\n▪ Repetir cada 3 a 5 minutos.\n▪ Considerar manejo avanzado de la vía aérea (TOT/Supraglótico) y capnografía con ventilación cada 6 seg (10 rpm).",
+      "nombre_droga": "Adrenalina",
+      "dosis_formula": "1",
+      "unidad": "mg",
+      "via": "EV o IO",
+      "presentacion": "Ampolla 1 mg / 1 mL",
+      "instruccion_extra": "Bolo rápido cada 3-5 minutos. En intoxicación por cocaína espaciar a cada 5 minutos.",
+      "siguiente_nodo": "pregunta_desfibrilable_l2"
+    },
+    "pregunta_desfibrilable_l2": {
+      "id": "pregunta_desfibrilable_l2",
+      "tipo": "pregunta",
+      "texto": "Reevaluación tras 2 min de RCP: ¿El ritmo sigue siendo Desfibrilable?",
+      "opciones": [
+        {
+          "texto": "SI (Persiste en FV/TV)",
+          "siguiente_nodo": "nodo_descarga_3"
+        },
+        {
+          "texto": "NO (Pasó a Asistolia/AESP)",
+          "siguiente_nodo": "nodo_asistolia_manejo"
+        },
+        {
+          "texto": "Retorno de Circulación Espontánea (RCE)",
+          "siguiente_nodo": "nodo_cuidados_post_paro"
+        }
+      ]
+    },
+    "nodo_descarga_3": {
+      "id": "nodo_descarga_3",
+      "tipo": "alerta",
+      "texto": "⚡ 3ª DESCARGA (DESFIBRILACIÓN):\n▪ Descarga 120 - 200 J (energía máxima bifásica).\n▪ Reiniciar RCP 2 min y preparar antiarrítmicos.",
+      "siguiente_nodo": "nodo_seleccion_antiarritmico"
+    },
+    "nodo_seleccion_antiarritmico": {
+      "id": "nodo_seleccion_antiarritmico",
+      "tipo": "pregunta",
+      "texto": "FARMACOTERAPIA ANTIARRÍTMICA (FV/TV Refractaria):\nSeleccione el fármaco disponible para cálculo de dosis:",
+      "opciones": [
+        {
+          "texto": "1° Amiodarona (300 mg bolo EV)",
+          "siguiente_nodo": "nodo_droga_amiodarona"
+        },
+        {
+          "texto": "2° Lidocaína (1 a 1,5 mg/kg EV)",
+          "siguiente_nodo": "nodo_droga_lidocaina"
+        },
+        {
+          "texto": "Sulfato de Magnesio (1 a 2 g en Torsades)",
+          "siguiente_nodo": "nodo_droga_sulfato_mg"
+        }
+      ]
+    },
+    "nodo_droga_amiodarona": {
+      "id": "nodo_droga_amiodarona",
+      "tipo": "droga",
+      "texto": "1° Opción: Amiodarona 300 mg EV/IO en bolo rápido diluido en SG 5%.\nDe requerir segunda dosis post siguiente choque: administrar 150 mg EV.",
+      "nombre_droga": "Amiodarona",
+      "dosis_formula": "300",
+      "unidad": "mg",
+      "via": "EV o IO",
+      "presentacion": "Ampolla 150 mg / 3 mL",
+      "instruccion_extra": "Contraindicada en alergia a Yodo, Hipertiroidismo y QT largo previo.",
+      "siguiente_nodo": "pregunta_desfibrilable_l1"
+    },
+    "nodo_droga_lidocaina": {
+      "id": "nodo_droga_lidocaina",
+      "tipo": "droga",
+      "texto": "2° Opción: Lidocaína 1 a 1,5 mg/kg EV/IO bolo inicial.\nDe requerir segunda dosis: 0,5 a 0,75 mg/kg EV (priorizar si sospecha de QT prolongado).",
+      "nombre_droga": "Lidocaína 2%",
+      "dosis_formula": "1.0 - 1.5",
+      "unidad": "mg/kg",
+      "via": "EV o IO",
+      "presentacion": "Ampolla 2% (100 mg / 5 mL)",
+      "instruccion_extra": "Alternativa de elección ante contraindicación o falta de Amiodarona.",
+      "siguiente_nodo": "pregunta_desfibrilable_l1"
+    },
+    "nodo_droga_sulfato_mg": {
+      "id": "nodo_droga_sulfato_mg",
+      "tipo": "droga",
+      "texto": "Sulfato de Magnesio 1 a 2 g EV/IO en 10 mL de SG 5% en bolo.\nIndicado en Torsión de Puntas (Torsades de Pointes), hipomagnesemia o alcoholismo.",
+      "nombre_droga": "Sulfato de Magnesio",
+      "dosis_formula": "1 - 2",
+      "unidad": "g",
+      "via": "EV o IO",
+      "presentacion": "Ampolla 25% (1.25 g / 5 mL)",
+      "instruccion_extra": "Específico para Torsades de Pointes o sospecha de hipomagnesemia severa.",
+      "siguiente_nodo": "pregunta_desfibrilable_l1"
+    },
+    "nodo_asistolia_manejo": {
+      "id": "nodo_asistolia_manejo",
+      "tipo": "droga",
+      "texto": "Manejo Asistolia / AESP (Ritmos NO Desfibrilables):\n▪ RCP continua de 2 minutos.\n▪ Acceso IV o IO rápido.\n▪ Adrenalina 1 mg EV/IO precoz (cada 3 a 5 min).\n▪ Considerar manejo avanzado de la vía aérea y capnografía.",
+      "nombre_droga": "Adrenalina (Asistolia)",
+      "dosis_formula": "1",
+      "unidad": "mg",
+      "via": "EV o IO",
+      "presentacion": "Ampolla 1 mg / 1 mL",
+      "instruccion_extra": "Administrar lo antes posible en Asistolia/AESP. Repetir cada 3-5 minutos.",
+      "siguiente_nodo": "pregunta_desfibrilable_r1"
+    },
+    "pregunta_desfibrilable_r1": {
+      "id": "pregunta_desfibrilable_r1",
+      "tipo": "pregunta",
+      "texto": "Reevaluación de ritmo tras 2 min: ¿El ritmo cambió a Desfibrilable?",
+      "opciones": [
+        {
+          "texto": "SI (Cambió a FV/TV -> Cruzar a Choque)",
+          "siguiente_nodo": "nodo_descarga_2"
+        },
+        {
+          "texto": "NO (Continúa en Asistolia / AESP)",
+          "siguiente_nodo": "nodo_tratar_causas_reversibles"
+        },
+        {
+          "texto": "Retorno de Circulación Espontánea (RCE)",
+          "siguiente_nodo": "nodo_cuidados_post_paro"
+        }
+      ]
+    },
+    "nodo_tratar_causas_reversibles": {
+      "id": "nodo_tratar_causas_reversibles",
+      "tipo": "procedimiento",
+      "texto": "Buscar y Tratar Causas Reversibles (Regla de las H y T):\n▪ H: Hipovolemia, Hipoxia, Hidrogeniones (acidosis), Hipo/Hipercalemia, Hipotermia.\n▪ T: Tensión neumotórax, Taponamiento cardíaco, Tóxicos, Trombosis pulmonar, Trombosis coronaria.\n\n▪ Si hay sospecha de Hipercalemia o intoxicación por Tricíclicos: Administrar Bicarbonato de Sodio.",
+      "siguiente_nodo": "pregunta_desfibrilable_r2"
+    },
+    "pregunta_desfibrilable_r2": {
+      "id": "pregunta_desfibrilable_r2",
+      "tipo": "pregunta",
+      "texto": "Reevaluación: ¿El ritmo pasó a Desfibrilable?",
+      "opciones": [
+        {
+          "texto": "SI (Pasó a FV/TV -> Cruzar a 2ª Descarga)",
+          "siguiente_nodo": "nodo_descarga_2"
+        },
+        {
+          "texto": "NO (Persiste Asistolia / AESP)",
+          "siguiente_nodo": "nodo_asistolia_manejo"
+        },
+        {
+          "texto": "Retorno de Circulación Espontánea (RCE)",
+          "siguiente_nodo": "nodo_cuidados_post_paro"
+        }
+      ]
+    },
+    "nodo_droga_adrenalina": {
+      "id": "nodo_droga_adrenalina",
+      "tipo": "droga",
+      "texto": "Adrenalina 1 mg EV/IO cada 3 a 5 min en bolo rápido con lavado de SF.",
+      "nombre_droga": "Adrenalina",
+      "dosis_formula": "1",
+      "unidad": "mg",
+      "via": "EV o IO",
+      "presentacion": "Ampolla 1 mg / 1 mL",
+      "instruccion_extra": "Repetir cada 3-5 minutos mientras persista el PCR."
+    },
+    "nodo_droga_bicarbonato": {
+      "id": "nodo_droga_bicarbonato",
+      "tipo": "droga",
+      "texto": "Bicarbonato de Sodio 2/3 M (8,4%) 1 mEq/kg EV lento.\nIndicado en Hipercalemia, Acidosis documentada o intoxicación por antidepresivos tricíclicos.",
+      "nombre_droga": "Bicarbonato de Sodio 8.4%",
+      "dosis_formula": "1",
+      "unidad": "mEq/kg",
+      "via": "EV o IO",
+      "presentacion": "Matraz 8.4% (250 mL = 250 mEq)",
+      "instruccion_extra": "Asegurar vía aérea avanzada antes de su uso. NO mezclar con catecolaminas (precipita)."
+    },
+    "nodo_cuidados_post_paro": {
+      "id": "nodo_cuidados_post_paro",
+      "tipo": "procedimiento",
+      "texto": "CUIDADOS POST-PARO (RCE CONFIRMADO):\n▪ Reporte inmediato a Centro Regulador (CR) para alerta a Unidad de Emergencia Hospitalaria (UEH).\n▪ Optimizar ventilación y oxigenación (SpO2 92-98%, evitar hiperventilación).\n▪ Mantener PAM > 65 mmHg (fluidos y vasopresores si hipotensión).\n▪ Realizar ECG de 12 derivaciones (evaluar activación código IAM).\n▪ Control seriado de glicemia y temperatura corporal (evitar hipertermia)."
+    }
+  }
+}

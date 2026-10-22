@@ -116,11 +116,13 @@ class MainActivity : ComponentActivity() {
                                             val idLower = item.id.lowercase()
                                             val nodoInicial = when {
                                                 idLower == "hiperglicemia" -> "pregunta_alt_consciencia_hiper"
-                                                idLower == "hipoglicemia" -> "nodo_abcde"
+                                                idLower == "hipoglicemia" -> "pregunta_alt_consciencia_hipo"
                                                 else -> null
                                             }
                                             viewModel.seleccionarParaFlujo(proto, nodoInicial)
                                             navController.navigate(Destinos.FLUJO_PROTOCOLO)
+                                        } catch (e: Exception) {
+                                            android.util.Log.e("MainActivity", "Error al cargar protocolo '${item.nombre}' : ${e.message}", e)
                                         } finally {
                                             viewModel.setCargando(false)
                                         }

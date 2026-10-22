@@ -64,6 +64,22 @@
             "status convulsivo",
             "epilepsia"
         ]
+    },
+    {
+        "id": "protocolo_pcr_no_traumatico_001",
+        "nombre": "Paro Cardiorrespiratorio No Traumático",
+        "categoria": "Reanimación / Cardiovascular",
+        "archivo": "assets/data/proto_pcr_no_traumatico.json",
+        "tags_busqueda": [
+            "paro",
+            "pcr",
+            "paro cardiorespiratorio",
+            "paro cardiorrespiratorio",
+            "paro no traumatico",
+            "rcp",
+            "fibrilacion ventricular",
+            "taquicardia ventricular"
+        ]  
     }
         
 ]

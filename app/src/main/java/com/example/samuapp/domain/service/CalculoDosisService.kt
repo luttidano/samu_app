@@ -143,7 +143,7 @@ class CalculoDosisService {
         
         // deteccion de porcentajes
         
-        val matchPct = Regex("""(\d+)?:[.,]\d+)?)\s*%""").find(pres)
+        val matchPct = Regex("""(\d+(?:[.,]\d+)?)\s*%""").find(pres)
         if (matchPct != null) {
             val pct = matchPct.groupValues[1].replace(',', '.').toDoubleOrNull() ?: 0.0
             return if (nom.contains("glucosa")) pct / 100.0 else pct * 10.0

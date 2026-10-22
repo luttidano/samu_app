@@ -145,12 +145,22 @@ fun VistaDiagramaCompleto(
                     if (desdeLayout == null || hastaLayout == null) continue
 
                     val start = obtenerPuntoAncla(layoutMap, conexion.desde, conexion.salida)
-                    val end = obtenerPuntoAncla(layoutMap, conexion.hasta, conexion.entrada)
+                    val end = obtenerPuntoAncla(
+                        layoutMap = layoutMap,
+                        elementoId = conexion.hasta,
+                        posicion = conexion.entrada,
+                        referenciaY = if (conexion.salida == "derecha" || conexion.salida == "izquierda") start.y else null
+                    )
+
+                    val esPcr = protocolo.id.contains("pcr", ignoreCase = true)
 
                     dibujarConexion(
                         start = start,
                         end = end,
-                        lineColor = lineColor
+                        salida = conexion.salida,
+                        entrada = conexion.entrada,
+                        lineColor = lineColor,
+                        esPcr = esPcr
                     )
 
                     if (!conexion.etiqueta.isNullOrEmpty()) {
@@ -659,12 +669,22 @@ private fun rememberDiagramaLayout(
                 val desde = diagrama.elementos.find { it.id == conexion.desde }
                 val hasta = diagrama.elementos.find { it.id == conexion.hasta }
                 if (desde != null && hasta != null) {
-                    val esHaciaAbajo = conexion.salida != "derecha" && conexion.salida != "izquierda" && hasta.y >= desde.y
+                    val esHaciaAbajo = if (hasta.y == desde.y) {
+                        conexion.salida == "abajo" || conexion.entrada == "arriba"
+                    } else {
+                        conexion.salida != "derecha" && conexion.salida != "izquierda" && hasta.y > desde.y
+                    }
                     if (esHaciaAbajo) {
                         val yDesde = posicionesY[desde.id] ?: (desde.y * factorY).dp
                         val hDesde = alturasRequeridas[desde.id] ?: desde.height.dp
                         val yHasta = posicionesY[hasta.id] ?: (hasta.y * factorY).dp
-                        val gapRequerido = if (!conexion.etiqueta.isNullOrEmpty()) minArrowGapWithLabel else minArrowGap
+                        val gapRequerido = if (!conexion.etiqueta.isNullOrEmpty()) {
+                            minArrowGapWithLabel
+                        } else if (desde.tipo == "opcion" || hasta.tipo == "opcion") {
+                            20.dp
+                        } else {
+                            minArrowGap
+                        }
                         val yMinima = yDesde + hDesde + gapRequerido
                         if (yHasta < yMinima) {
                             posicionesY[hasta.id] = yMinima
@@ -689,7 +709,8 @@ private fun rememberDiagramaLayout(
                         val solapanX = elemB.x < (elemA.x + elemA.width) && (elemB.x + elemB.width) > elemA.x
                         if (solapanX) {
                             val yB = posicionesY[elemB.id] ?: (elemB.y * factorY).dp
-                            val yMinima = yA + hA + minBoxGap
+                            val gap = if (elemA.tipo == "opcion" || elemB.tipo == "opcion") 20.dp else minBoxGap
+                            val yMinima = yA + hA + gap
                             if (yB < yMinima) {
                                 posicionesY[elemB.id] = yMinima
                                 huboCambio = true
@@ -699,16 +720,67 @@ private fun rememberDiagramaLayout(
                 }
             }
 
-            // Regla C: Mantener alineadas las bifurcaciones y ramas hermanas (mismo Y original)
+            // Regla C: Mantener alineadas únicamente bifurcaciones hermanas directas (mismo padre y mismo Y original)
             val gruposPorYOriginal = diagrama.elementos.groupBy { it.y }
             for ((_, grupo) in gruposPorYOriginal) {
                 if (grupo.size > 1) {
+                    val padresPorElemento = grupo.map { elem ->
+                        diagrama.conexiones.filter { it.hasta == elem.id && it.salida != "izquierda" && it.salida != "derecha" }.map { it.desde }.toSet()
+                    }
+                    val compartenPadre = padresPorElemento.all { it.isNotEmpty() } && padresPorElemento.reduce { acc, s -> acc.intersect(s) }.isNotEmpty()
+                    if (!compartenPadre) continue
+
                     val maxY = grupo.map { posicionesY[it.id] ?: (it.y * factorY).dp }.maxOrNull() ?: continue
                     for (elem in grupo) {
                         val currentY = posicionesY[elem.id] ?: (elem.y * factorY).dp
                         if (currentY < maxY) {
                             posicionesY[elem.id] = maxY
                             huboCambio = true
+                        }
+                    }
+                }
+            }
+
+            // Regla D: Alineación vertical estricta para opciones de salida lateral (mantiene SI/NO centrados con su pregunta)
+            for (conexion in diagrama.conexiones) {
+                if (conexion.salida == "derecha" || conexion.salida == "izquierda") {
+                    val desde = diagrama.elementos.find { it.id == conexion.desde }
+                    val hasta = diagrama.elementos.find { it.id == conexion.hasta }
+                    if (desde != null && hasta != null && hasta.tipo == "opcion") {
+                        val yDesde = posicionesY[desde.id] ?: (desde.y * factorY).dp
+                        val hDesde = alturasRequeridas[desde.id] ?: desde.height.dp
+                        val hHasta = alturasRequeridas[hasta.id] ?: hasta.height.dp
+                        val yAlineado = yDesde + (hDesde - hHasta) / 2
+                        if (posicionesY[hasta.id] != yAlineado) {
+                            posicionesY[hasta.id] = yAlineado
+                            huboCambio = true
+                        }
+                    }
+                }
+            }
+
+            // Regla E (Adaptación a protocolo PCR): Bajar preguntas de reevaluación (preg_desfib_r1 / r2)
+            // para que su 'SI' se alinee con el choque (descarga_2 / 3) exclusivamente en PCR
+            val esPcr = protocolo.id.contains("pcr", ignoreCase = true)
+            if (esPcr) {
+                for (conexion in diagrama.conexiones) {
+                    if (conexion.salida == "izquierda" && conexion.entrada == "derecha") {
+                        val opcion = diagrama.elementos.find { it.id == conexion.desde }
+                        val destino = diagrama.elementos.find { it.id == conexion.hasta }
+                        if (opcion != null && destino != null && opcion.tipo == "opcion") {
+                            val padreConexion = diagrama.conexiones.find { it.hasta == opcion.id && it.salida == "izquierda" }
+                            val padre = if (padreConexion != null) diagrama.elementos.find { it.id == padreConexion.desde } else null
+                            if (padre != null) {
+                                val yDestino = posicionesY[destino.id] ?: (destino.y * factorY).dp
+                                val hDestino = alturasRequeridas[destino.id] ?: destino.height.dp
+                                val hPadre = alturasRequeridas[padre.id] ?: padre.height.dp
+                                val yDeseadoPadre = yDestino + (hDestino - hPadre) / 2
+                                val yActualPadre = posicionesY[padre.id] ?: (padre.y * factorY).dp
+                                if (yDeseadoPadre > yActualPadre) {
+                                    posicionesY[padre.id] = yDeseadoPadre
+                                    huboCambio = true
+                                }
+                            }
                         }
                     }
                 }
@@ -736,7 +808,8 @@ private fun rememberDiagramaLayout(
 private fun DrawScope.obtenerPuntoAncla(
     layoutMap: Map<String, ElementoLayout>,
     elementoId: String,
-    posicion: String
+    posicion: String,
+    referenciaY: Float? = null
 ): Offset {
     val layout = layoutMap[elementoId] ?: return Offset.Zero
     val x = layout.x.toPx()
@@ -745,25 +818,93 @@ private fun DrawScope.obtenerPuntoAncla(
     val h = layout.height.toPx()
 
     return when (posicion) {
-        "izquierda" -> Offset(x, y + h / 2f)
-        "derecha" -> Offset(x + w, y + h / 2f)
+        "izquierda" -> {
+            val yTarget = if (referenciaY != null && referenciaY >= (y + 16.dp.toPx()) && referenciaY <= (y + h - 16.dp.toPx())) {
+                referenciaY
+            } else {
+                y + h / 2f
+            }
+            Offset(x, yTarget)
+        }
+        "derecha" -> {
+            val yTarget = if (referenciaY != null && referenciaY >= (y + 16.dp.toPx()) && referenciaY <= (y + h - 16.dp.toPx())) {
+                referenciaY
+            } else {
+                y + h / 2f
+            }
+            Offset(x + w, yTarget)
+        }
         "arriba" -> Offset(x + w / 2f, y)
         "abajo" -> Offset(x + w / 2f, y + h)
         else -> Offset(x + w / 2f, y + h)
     }
 }
 
-private fun DrawScope.dibujarConexion(start: Offset, end: Offset, lineColor: Color) {
-    val strokeWidth = 3.dp.toPx()
+private fun DrawScope.dibujarConexion(
+    start: Offset, 
+    end: Offset, 
+    salida: String = "abajo",
+    entrada: String = "arriba",
+    lineColor: Color,
+    esPcr: Boolean = false
+) {
+    val strokeWidth = 2.5.dp.toPx()
     val path = Path()
-    val horizontal = abs(start.y - end.y) < 20f
 
+    val esBucleIzquierdo = salida == "izquierda" && entrada == "izquierda"
+    val esBucleDerecho = (salida == "derecha" || salida == "arriba") && entrada == "derecha" && end.y < start.y
+    // Adaptación a protocolo PCR: bypass por el espacio libre inferior
+    val esByPassInferior = esPcr && salida == "abajo" && entrada == "abajo"
     val arrowAngle: Float
-    if (horizontal) {
+    if (esBucleIzquierdo) {
+        // Bucle perimetral por el margen izquierdo (retorno a L1)
+        val xOuter = (minOf(start.x, end.x) - 35.dp.toPx()).coerceAtLeast(15.dp.toPx())
+        path.moveTo(start.x, start.y)
+        path.lineTo(xOuter, start.y)
+        path.lineTo(xOuter, end.y)
+        path.lineTo(end.x, end.y)
+        arrowAngle = -90f
+    } else if (esBucleDerecho) {
+        // Bucle perimetral por el margen derecho (retorno a Asistolia)
+        val xOuter = maxOf(start.x, end.x) + 35.dp.toPx()
+        path.moveTo(start.x, start.y)
+        path.lineTo(xOuter, start.y)
+        path.lineTo(xOuter, end.y)
+        path.lineTo(end.x, end.y)
+        arrowAngle = 90f
+    } else if (esByPassInferior) {  
+        // Bypass por el espacio libre inferior (conecta opc_no_l2 con el retorno derecho por debajo de las preguntas)
+        val yBelow = maxOf(start.y, end.y) + 35.dp.toPx()
+        path.moveTo(start.x, start.y)
+        path.lineTo(start.x, yBelow)
+        path.lineTo(end.x, yBelow)
+        path.lineTo(end.x, end.y)
+        arrowAngle = 180f // Flecha vertical hacia arriba apuntando a la base
+    } else if (abs(start.y - end.y) < 16f) {
+        // Línea horizontal completamente recta
         path.moveTo(start.x, start.y)
         path.lineTo(end.x, end.y)
-        arrowAngle = if (end.x >= start.x) 90f else -90f
+        arrowAngle = if (end.x >= start.x) -90f else 90f
+    } else if (abs(start.x - end.x) < 16f) {
+        // Línea vertical completamente recta
+        path.moveTo(start.x, start.y)
+        path.lineTo(end.x, end.y)
+        arrowAngle = if (end.y >= start.y) 0f else 180f
+    } else if (salida == "derecha" || salida == "izquierda") {
+        // Salida lateral: avanza horizontalmente primero hacia middleX
+        // Adaptación a protocolo PCR: usamos el corredor libre (start.x - 25 dp) para no solapar la opción NO izquierda
+        val middleX = if (esPcr && salida == "izquierda" && entrada == "derecha" && end.y < start.y) {
+            start.x - 25.dp.toPx()
+        } else {
+            (start.x + end.x) / 2f
+        }
+        path.moveTo(start.x, start.y)
+        path.lineTo(middleX, start.y)
+        path.lineTo(middleX, end.y)
+        path.lineTo(end.x, end.y)
+        arrowAngle = if (end.x >= middleX) -90f else 90f
     } else {
+        // Salida vertical: avanza verticalmente primero hacia middleY
         val middleY = (start.y + end.y) / 2f
         path.moveTo(start.x, start.y)
         path.lineTo(start.x, middleY)
@@ -778,21 +919,23 @@ private fun DrawScope.dibujarConexion(start: Offset, end: Offset, lineColor: Col
         style = Stroke(width = strokeWidth)
     )
 
-    // Dibujar la punta de flecha
     dibujarFlecha(point = end, angleDegrees = arrowAngle, color = lineColor)
 }
 
 private fun DrawScope.dibujarFlecha(point: Offset, angleDegrees: Float, color: Color) {
+    val arrowLength = 14.dp.toPx()
+    val halfWidth = 7.dp.toPx()
+
     val arrowPath = Path().apply {
         moveTo(0f, 0f)
-        lineTo(-8f, -16f)
-        lineTo(8f, -16f)
+        lineTo(-halfWidth, -arrowLength)
+        lineTo(halfWidth, -arrowLength)
         close()
     }
 
     withTransform({
         translate(point.x, point.y)
-        rotate(degrees = angleDegrees)
+        rotate(degrees = angleDegrees, pivot = Offset.Zero)
     }) {
         drawPath(arrowPath, color = color)
     }

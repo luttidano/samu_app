@@ -22,7 +22,9 @@ class WhisperServiceImpl(
             "Paciente con hipoglicemia, hiperglicemia, edema agudo de pulmón (EPA)" +
             "síndrome coronario agudo, infarto agudo al miocardio (IAM), disnea" +
             "convulsión, status convulsivo, crisis convulsiva, epilepsia " +
-            " paro cardiorrespiratorio. Signos vitales, peso en kilos, sexo masculino o femenino"
+            "paro cardiorrespiratorio, PCR no traumático, PCR no traumatico, RCP, asistolia, fibrilación ventricular,"  +
+            "taquicardia ventricular, actividad eléctrica sin pulso, descarga, adrenalina, amiodarona." +    
+            "Signos vitales, peso en kilos, sexo masculino o femenino"
     }
 
     private val jsonParser = Json { ignoreUnknownKeys = true }
